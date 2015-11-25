@@ -1,0 +1,42 @@
+include 3ds.types
+include 3ds.svc
+include 3ds.srv
+include 3ds.linear
+include 3ds.vram
+include 3ds.os
+include 3ds.gfx
+include 3ds.console
+include 3ds.util.utf
+
+include 3ds.services.ac
+include 3ds.services.am
+include 3ds.services.apt
+include 3ds.services.cam
+include 3ds.services.cfgnor
+include 3ds.services.cfgu
+include 3ds.services.csnd
+include 3ds.services.fs
+include 3ds.services.gsp
+include 3ds.services.hid
+include 3ds.services.irrst
+include 3ds.services.httpc
+include 3ds.services.ir
+include 3ds.services.ns
+include 3ds.services.pm
+include 3ds.services.ps
+include 3ds.services.ptm
+include 3ds.services.soc
+include 3ds.services.mic
+include 3ds.services.mvd
+include 3ds.services.news
+include 3ds.services.qtm
+include 3ds.services.y2r
+include 3ds.services.hb
+
+include 3ds.gpu.gx
+include 3ds.gpu.gpu
+include 3ds.gpu.shbin
+include 3ds.gpu.shaderProgram
+
+include 3ds.sdmc
+include 3ds.romfs
