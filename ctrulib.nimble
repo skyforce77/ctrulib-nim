@@ -1,8 +1,8 @@
 [Package]
-name          = "ctrulib-nim"
+name          = "ctrulib"
 version       = "0.1.0"
 author        = "Skyforce77"
-description   = "Smealum's ctrulib wrapper"
+description   = "Nintendo 3ds ctrulib wrapper"
 license       = "GPLv2"
 
 [Deps]
