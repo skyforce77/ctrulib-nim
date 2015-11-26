@@ -1,81 +1,81 @@
-#! @file FS.h
-# 
+# @file FS.h
+#
 #   Filesystem Services
-# 
+#
 #! @defgroup fs_open_flags FS Open Flags
-# 
+#
 #   @sa FSUSER_OpenFile
 #   @sa FSUSER_OpenFileDirectly
-# 
+#
 #   @{
-# 
-#! Open file for read. 
+#
+#! Open file for read.
 
 const
   FS_OPEN_READ* = (1 shl 0)
 
-#! Open file for write. 
+#! Open file for write.
 
 const
   FS_OPEN_WRITE* = (1 shl 1)
 
-#! Create file if it doesn't exist. 
+#! Create file if it doesn't exist.
 
 const
   FS_OPEN_CREATE* = (1 shl 2)
 
-# @} 
+# @}
 #! @defgroup fs_create_attributes FS Create Attributes
-# 
+#
 #   @sa FSUSER_OpenFile
 #   @sa FSUSER_OpenFileDirectly
-# 
+#
 #   @{
-# 
-#! No attributes. 
+#
+#! No attributes.
 
 const
   FS_ATTRIBUTE_NONE* = (0x00000000)
 
-#! Create with read-only attribute. 
+#! Create with read-only attribute.
 
 const
   FS_ATTRIBUTE_READONLY* = (0x00000001)
 
-#! Create with archive attribute. 
+#! Create with archive attribute.
 
 const
   FS_ATTRIBUTE_ARCHIVE* = (0x00000100)
 
-#! Create with hidden attribute. 
+#! Create with hidden attribute.
 
 const
   FS_ATTRIBUTE_HIDDEN* = (0x00010000)
 
-#! Create with directory attribute. 
+#! Create with directory attribute.
 
 const
   FS_ATTRIBUTE_DIRECTORY* = (0x01000000)
 
-#! @} 
+#! @}
 #! @defgroup fs_write_flush_flags FS Flush Flags
-# 
+#
 #   @sa FSFILE_Write
-# 
+#
 #   @{
-# 
-#! Don't flush 
+#
+#! Don't flush
 
 const
   FS_WRITE_NOFLUSH* = (0x00000000)
 
-#! Flush 
+#! Flush
 
 const
   FS_WRITE_FLUSH* = (0x00010001)
 
-# @} 
-#! FS path type 
+# @}
+#! FS path type
 
 type
   FS_pathType* = enum
@@ -86,7 +86,7 @@ type
     PATH_WCHAR = 4              #!< Specifies a text based path with a 16-bit short per character.
 
 
-#! FS archive ids 
+#! FS archive ids
 
 type
   FS_archiveIds* = enum
@@ -98,16 +98,16 @@ type
     ARCH_NAND_RO_WRITE_ACCESS = 0x1234567F
 
 
-#! FS path 
+#! FS path
 
 type
   FS_path* = object
     `type`*: FS_pathType       #!< FS path type.
     size*: u32                 #!< FS path size.
     data*: ptr u8               #!< Pointer to FS path data.
-  
 
-#! FS archive 
+
+#! FS archive
 
 type
   FS_archive* = object
@@ -115,9 +115,9 @@ type
     lowPath*: FS_path          #!< FS path.
     handleLow*: Handle         #!< High word of handle.
     handleHigh*: Handle        #!< Low word of handle.
-  
 
-#! Directory entry 
+
+#! Directory entry
 
 type
   FS_dirent* = object
@@ -143,9 +143,9 @@ type
     isReadOnly*: u8            #!< read-only bit
                   # 0x220
     fileSize*: u64             #!< file size
-  
 
-#! ProductInfo. These strings are not NULL-terminated. 
+
+#! ProductInfo. These strings are not NULL-terminated.
 
 type
   FS_ProductInfo* = object
@@ -206,4 +206,4 @@ proc FSFILE_SetAttributes*(handle: Handle; attributes: u32): Result
 proc FSFILE_Flush*(handle: Handle): Result
 proc FSDIR_Read*(handle: Handle; entriesRead: ptr u32; entrycount: u32;
                 buffer: ptr FS_dirent): Result
-proc FSDIR_Close*(handle: Handle): Result
+proc FSDIR_Close*(handle: Handle): Result = 0

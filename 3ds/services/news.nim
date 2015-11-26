@@ -2,7 +2,7 @@
 # Requires access to "news:u" service.
 #
 
-proc newsInit*(): Result
+proc newsInit*(): Result = 0
 proc newsExit*(): Result
 # NEWSU_AddNotification()
 #About: Adds a notification to the home menu Notifications applet.

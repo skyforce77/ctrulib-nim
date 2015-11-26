@@ -6,15 +6,15 @@ template CSND_TIMER*(n: expr): expr =
 
 # Convert a vol-pan pair into a left/right volume pair used by the hardware
 
-proc CSND_VOL*(vol: cfloat; pan: cfloat): u32 {.inline.} =
+proc CSND_VOL*(vol: var cfloat; pan: var cfloat): u32 {.inline.} =
   if vol < 0.0: vol = 0.0
   elif vol > 1.0: vol = 1.0
-  var rpan: cfloat = (pan + 1) div 2
+  var rpan: cfloat = cfloat(pan + cfloat(1.0)) / cfloat(2.0)
   if rpan < 0.0: rpan = 0.0
   elif rpan > 1.0: rpan = 1.0
-  var lvol: u32 = vol * (1 - rpan) * 0x00008000
-  var rvol: u32 = vol * rpan * 0x00008000
-  return lvol or (rvol shl 16)
+  var lvol: u32 = u32(vol * (1.0 - rpan)) * u32(0x00008000)
+  var rvol: u32 = u32(vol * (rpan)) * u32(0x00008000)
+  return lvol or (rvol shl u32(16.0))
 
 const
   CSND_ENCODING_PCM8* = 0
@@ -57,29 +57,29 @@ const
 # Duty cycles for a PSG channel
 
 const
-  DutyCycle_0* = 7              #!<  0.0% duty cycle 
-  DutyCycle_12* = 0             #!<  12.5% duty cycle 
-  DutyCycle_25* = 1             #!<  25.0% duty cycle 
-  DutyCycle_37* = 2             #!<  37.5% duty cycle 
-  DutyCycle_50* = 3             #!<  50.0% duty cycle 
-  DutyCycle_62* = 4             #!<  62.5% duty cycle 
-  DutyCycle_75* = 5             #!<  75.0% duty cycle 
+  DutyCycle_0* = 7              #!<  0.0% duty cycle
+  DutyCycle_12* = 0             #!<  12.5% duty cycle
+  DutyCycle_25* = 1             #!<  25.0% duty cycle
+  DutyCycle_37* = 2             #!<  37.5% duty cycle
+  DutyCycle_50* = 3             #!<  50.0% duty cycle
+  DutyCycle_62* = 4             #!<  62.5% duty cycle
+  DutyCycle_75* = 5             #!<  75.0% duty cycle
   DutyCycle_87* = 6
 
 type
   INNER_C_STRUCT_9160523392117797416* = object
     active*: u8
-    _pad1*: u8
-    _pad2*: u16
+    pad1*: u8
+    pad2*: u16
     adpcmSample*: s16
     adpcmIndex*: u8
-    _pad3*: u8
+    pad3*: u8
     unknownZero*: u32
 
   INNER_C_STRUCT_9486380960715914939* = object
     active*: u8
-    _pad1*: u8
-    _pad2*: u16
+    pad1*: u8
+    pad2*: u16
     unknownZero*: u32
 
   CSND_ChnInfo* = object {.union.}
@@ -131,19 +131,19 @@ proc CSND_SetChnRegs*(flags: u32; physaddr0: u32; physaddr1: u32; totalbytesize:
                      chnVolumes: u32; capVolumes: u32)
 proc CSND_SetChnRegsPSG*(flags: u32; chnVolumes: u32; capVolumes: u32; duty: u32)
 proc CSND_SetChnRegsNoise*(flags: u32; chnVolumes: u32; capVolumes: u32)
-proc CSND_CapEnable*(capUnit: u32; enable: bool)
-proc CSND_CapSetRepeat*(capUnit: u32; repeat: bool)
-proc CSND_CapSetFormat*(capUnit: u32; eightbit: bool)
-proc CSND_CapSetBit2*(capUnit: u32; set: bool)
-proc CSND_CapSetTimer*(capUnit: u32; timer: u32)
-proc CSND_CapSetBuffer*(capUnit: u32; `addr`: u32; size: u32)
-proc CSND_SetCapRegs*(capUnit: u32; flags: u32; `addr`: u32; size: u32)
-proc CSND_SetDspFlags*(waitDone: bool): Result
-proc CSND_UpdateInfo*(waitDone: bool): Result
+proc CSND_CapEnable*(capUnit: u32; enable: bool) = discard void
+proc CSND_CapSetRepeat*(capUnit: u32; repeat: bool) = discard void
+proc CSND_CapSetFormat*(capUnit: u32; eightbit: bool) = discard void
+proc CSND_CapSetBit2*(capUnit: u32; set: bool) = discard void
+proc CSND_CapSetTimer*(capUnit: u32; timer: u32) = discard void
+proc CSND_CapSetBuffer*(capUnit: u32; `addr`: u32; size: u32) = discard void
+proc CSND_SetCapRegs*(capUnit: u32; flags: u32; `addr`: u32; size: u32) = discard void
+proc CSND_SetDspFlags*(waitDone: bool): Result = 0
+proc CSND_UpdateInfo*(waitDone: bool): Result = 0
 #*
 #  @param vol The volume, ranges from 0.0 to 1.0 included
 #  @param pan The pan, ranges from -1.0 to 1.0 included
-# 
+#
 
 proc csndPlaySound*(chn: cint; flags: u32; sampleRate: u32; vol: cfloat; pan: cfloat;
                    data0: pointer; data1: pointer; size: u32): Result

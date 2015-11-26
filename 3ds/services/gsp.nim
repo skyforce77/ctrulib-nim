@@ -10,7 +10,7 @@ type                          #See this for GSP_CaptureInfoEntry and GSP_Capture
     format*: u32               #"Framebuffer format, this u16 is written to the low u16 for LCD register 0x1EF00X70."
     framebuf_dispselect*: u32  #"Value for 0x1EF00X78, controls which framebuffer is displayed"
     unk*: u32                  #"?"
-  
+
   GSP_FramebufferFormats* = enum
     GSP_RGBA8_OES = 0,          #pixel_size = 4-bytes
     GSP_BGR8_OES = 1,           #pixel_size = 3-bytes
@@ -33,13 +33,13 @@ type                          #See this for GSP_CaptureInfoEntry and GSP_Capture
     GSPEVENT_DMA, GSPEVENT_MAX # used to know how many events there are
   GSPLCD_Screens* = enum
     GSPLCD_TOP = BIT(0), GSPLCD_BOTTOM = BIT(1),
-    GSPLCD_BOTH = GSPLCD_TOP or GSPLCD_BOTTOM
+    GSPLCD_BOTH = BIT(0) or BIT(1)
 
 
 
 
 proc gspInit*(): Result
-proc gspExit*()
+proc gspExit*() = nil
 proc gspLcdInit*(): Result
 proc gspLcdExit*()
 proc gspInitEventHandler*(gspEvent: Handle; gspSharedMem: ptr vu8; gspThreadId: u8): Result

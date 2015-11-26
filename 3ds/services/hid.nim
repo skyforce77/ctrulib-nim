@@ -1,23 +1,36 @@
 #See also: http://3dbrew.org/wiki/HID_Services http://3dbrew.org/wiki/HID_Shared_Memory
 
+const
+  # Generic catch-all directions
+  KEY_RIGHT = BIT(4) or BIT(28)
+  KEY_LEFT = BIT(5) or BIT(29)
+  KEY_UP = BIT(6) or BIT(30)
+  KEY_DOWN = BIT(7) or BIT(31)
+  KEY_A = BIT(0)
+  KEY_B = BIT(1)
+  KEY_SELECT = BIT(2)
+  KEY_START = BIT(3)
+  KEY_DRIGHT = BIT(4)
+  KEY_DLEFT = BIT(5)
+  KEY_DUP = BIT(6)
+  KEY_DDOWN = BIT(7)
+  KEY_R = BIT(8)
+  KEY_L = BIT(9)
+  KEY_X = BIT(10)
+  KEY_Y = BIT(11)
+  KEY_ZL = BIT(14) # (new 3DS only)
+  KEY_ZR = BIT(15)           # (new 3DS only)
+  KEY_TOUCH = BIT(20)        # Not actually provided by HID
+  KEY_CSTICK_RIGHT = BIT(24) # c-stick (new 3DS only)
+  KEY_CSTICK_LEFT = BIT(25)  # c-stick (new 3DS only)
+  KEY_CSTICK_UP = BIT(26)   # c-stick (new 3DS only)
+  KEY_CSTICK_DOWN = BIT(27)  # c-stick (new 3DS only)
+  KEY_CPAD_RIGHT = BIT(28)   # circle pad
+  KEY_CPAD_LEFT = BIT(29)    # circle pad
+  KEY_CPAD_UP = BIT(30)     # circle pad
+  KEY_CPAD_DOWN = BIT(31)    # circle pad
+
 type
-  PAD_KEY* = enum
-    KEY_A = BIT(0), KEY_B = BIT(1), KEY_SELECT = BIT(2), KEY_START = BIT(3),
-    KEY_DRIGHT = BIT(4), KEY_DLEFT = BIT(5), KEY_DUP = BIT(6), KEY_DDOWN = BIT(7),
-    KEY_R = BIT(8), KEY_L = BIT(9), KEY_X = BIT(10), KEY_Y = BIT(11), KEY_ZL = BIT(14), # (new 3DS only)
-    KEY_ZR = BIT(15),           # (new 3DS only)
-    KEY_TOUCH = BIT(20),        # Not actually provided by HID
-    KEY_CSTICK_RIGHT = BIT(24), # c-stick (new 3DS only)
-    KEY_CSTICK_LEFT = BIT(25),  # c-stick (new 3DS only)
-    KEY_CSTICK_UP = BIT(26),    # c-stick (new 3DS only)
-    KEY_CSTICK_DOWN = BIT(27),  # c-stick (new 3DS only)
-    KEY_CPAD_RIGHT = BIT(28),   # circle pad
-    KEY_CPAD_LEFT = BIT(29),    # circle pad
-    KEY_CPAD_UP = BIT(30),      # circle pad
-    KEY_CPAD_DOWN = BIT(31),    # circle pad
-                          # Generic catch-all directions
-    KEY_UP = KEY_DUP or KEY_CPAD_UP, KEY_DOWN = KEY_DDOWN or KEY_CPAD_DOWN,
-    KEY_LEFT = KEY_DLEFT or KEY_CPAD_LEFT, KEY_RIGHT = KEY_DRIGHT or KEY_CPAD_RIGHT
   touchPosition* = object
     px*: u16
     py*: u16
@@ -35,7 +48,7 @@ type
     x*: s16                    #roll
     z*: s16                    #yaw
     y*: s16                    #pitch
-  
+
   HID_Event* = enum
     HIDEVENT_PAD0 = 0,          #"Event signaled by HID-module, when the sharedmem+0(PAD/circle-pad)/+0xA8(touch-screen) region was updated."
     HIDEVENT_PAD1,            #"Event signaled by HID-module, when the sharedmem+0(PAD/circle-pad)/+0xA8(touch-screen) region was updated."
@@ -50,17 +63,17 @@ var hidMemHandle*: Handle
 
 var hidSharedMem*: ptr vu32
 
-proc hidInit*(): Result
-proc hidExit*()
-proc hidScanInput*()
-proc hidKeysHeld*(): u32
-proc hidKeysDown*(): u32
-proc hidKeysUp*(): u32
-proc hidTouchRead*(pos: ptr touchPosition)
-proc hidCircleRead*(pos: ptr circlePosition)
-proc hidAccelRead*(vector: ptr accelVector)
-proc hidGyroRead*(rate: ptr angularRate)
-proc hidWaitForEvent*(id: HID_Event; nextEvent: bool)
+proc hidInit*(): Result = 0
+proc hidExit*() = discard void
+proc hidScanInput*() = discard void
+proc hidKeysHeld*(): u32 = 0x00000000
+proc hidKeysDown*(): u32 = 0x00000000
+proc hidKeysUp*(): u32 = 0x00000000
+proc hidTouchRead*(pos: ptr touchPosition) = discard void
+proc hidCircleRead*(pos: ptr circlePosition) = discard void
+proc hidAccelRead*(vector: ptr accelVector) = discard void
+proc hidGyroRead*(rate: ptr angularRate) = discard void
+proc hidWaitForEvent*(id: HID_Event; nextEvent: bool) = discard void
 # libnds compatibility defines
 
 const
@@ -73,11 +86,11 @@ const
 
 proc HIDUSER_GetHandles*(outMemHandle: ptr Handle; eventpad0: ptr Handle;
                         eventpad1: ptr Handle; eventaccel: ptr Handle;
-                        eventgyro: ptr Handle; eventdebugpad: ptr Handle): Result
-proc HIDUSER_EnableAccelerometer*(): Result
-proc HIDUSER_DisableAccelerometer*(): Result
-proc HIDUSER_EnableGyroscope*(): Result
-proc HIDUSER_DisableGyroscope*(): Result
-proc HIDUSER_GetGyroscopeRawToDpsCoefficient*(coeff: ptr cfloat): Result
-proc HIDUSER_GetSoundVolume*(volume: ptr u8): Result
+                        eventgyro: ptr Handle; eventdebugpad: ptr Handle): Result = 0
+proc HIDUSER_EnableAccelerometer*(): Result = 0
+proc HIDUSER_DisableAccelerometer*(): Result = 0
+proc HIDUSER_EnableGyroscope*(): Result = 0
+proc HIDUSER_DisableGyroscope*(): Result = 0
+proc HIDUSER_GetGyroscopeRawToDpsCoefficient*(coeff: ptr cfloat): Result = 0
+proc HIDUSER_GetSoundVolume*(volume: ptr u8): Result = 0
 #Return the volume slider value (0-63)

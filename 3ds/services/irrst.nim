@@ -1,21 +1,18 @@
 #See also: http://3dbrew.org/wiki/IR_Services http://3dbrew.org/wiki/IRRST_Shared_Memory
 
-import
-  3ds/services/hid
-
 var irrstMemHandle*: Handle
 
-var irrstSharedMem*: ptr vu32
+var irrstSharedMem*: ptr vu32 = nil
 
-proc irrstInit*(): Result
-proc irrstExit*()
-proc irrstScanInput*()
-proc irrstKeysHeld*(): u32
-proc irrstCstickRead*(pos: ptr circlePosition)
-proc irrstWaitForEvent*(nextEvent: bool)
+proc irrstInit*(): Result = 0
+proc irrstExit*() = discard void
+proc irrstScanInput*() = discard void
+proc irrstKeysHeld*(): u32 = 0
+proc irrstCstickRead*(pos: ptr circlePosition) = discard void
+proc irrstWaitForEvent*(nextEvent: bool) = discard void
 const
   hidCstickRead* = irrstCstickRead
 
-proc IRRST_GetHandles*(outMemHandle: ptr Handle; outEventHandle: ptr Handle): Result
-proc IRRST_Initialize*(unk1: u32; unk2: u8): Result
-proc IRRST_Shutdown*(): Result
+proc IRRST_GetHandles*(outMemHandle: ptr Handle; outEventHandle: ptr Handle): Result = 0
+proc IRRST_Initialize*(unk1: u32; unk2: u8): Result = 0
+proc IRRST_Shutdown*(): Result = 0

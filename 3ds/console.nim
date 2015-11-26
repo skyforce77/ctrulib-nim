@@ -1,4 +1,3 @@
-#! \file console.h
 #    \brief 3ds stdio support.
 #
 #<div class="fileHeader">
@@ -22,7 +21,7 @@ type
     gfx*: ptr u8                #!< A pointer to the font graphics
     asciiOffset*: u16          #!<  Offset to the first valid character in the font table
     numChars*: u16             #!< Number of characters in the font graphics
-  
+
 
 #* \brief console structure used to store the state of a console render context.
 #
@@ -56,24 +55,24 @@ type
   PrintConsole* = object
     font*: ConsoleFont         #!< font of the console.
     frameBuffer*: ptr u16       #!< framebuffer address.
-    cursorX*: cint             #!< Current X location of the cursor (as a tile offset by default) 
-    cursorY*: cint             #!< Current Y location of the cursor (as a tile offset by default) 
-    prevCursorX*: cint         #!< Internal state 
-    prevCursorY*: cint         #!< Internal state 
-    consoleWidth*: cint        #!< Width of the console hardware layer in characters 
-    consoleHeight*: cint       #!< Height of the console hardware layer in characters  
-    windowX*: cint             #!< Window X location in characters (not implemented) 
-    windowY*: cint             #!< Window Y location in characters (not implemented) 
-    windowWidth*: cint         #!< Window width in characters (not implemented) 
-    windowHeight*: cint        #!< Window height in characters (not implemented) 
+    cursorX*: cint             #!< Current X location of the cursor (as a tile offset by default)
+    cursorY*: cint             #!< Current Y location of the cursor (as a tile offset by default)
+    prevCursorX*: cint         #!< Internal state
+    prevCursorY*: cint         #!< Internal state
+    consoleWidth*: cint        #!< Width of the console hardware layer in characters
+    consoleHeight*: cint       #!< Height of the console hardware layer in characters
+    windowX*: cint             #!< Window X location in characters (not implemented)
+    windowY*: cint             #!< Window Y location in characters (not implemented)
+    windowWidth*: cint         #!< Window width in characters (not implemented)
+    windowHeight*: cint        #!< Window height in characters (not implemented)
     tabSize*: cint             #!< Size of a tab
     fg*: cint                  #!< foreground color
     bg*: cint                  #!< background color
     flags*: cint               #!< reverse/bright flags
     PrintChar*: ConsolePrint #!< callback for printing a character. Should return true if it has handled rendering the graphics
-                           #         (else the print engine will attempt to render via tiles) 
-    consoleInitialised*: bool  #!< True if the console is initialized 
-  
+                           #         (else the print engine will attempt to render via tiles)
+    consoleInitialised*: bool  #!< True if the console is initialized
+
 
 const
   CONSOLE_COLOR_BOLD* = (1 shl 0)

@@ -1,5 +1,5 @@
 import
-  3ds/gpu/registers
+  "3ds/gpu/registers"
 
 #GPU
 
@@ -42,16 +42,16 @@ template GPUCMD_AddIncrementalWrites*(reg, vals, num: expr): expr =
 
 template GPU_TEXTURE_MAG_FILTER*(v: expr): expr =
   (((v) and 0x00000001) shl 1)    #takes a GPU_TEXTURE_FILTER_PARAM
-  
+
 template GPU_TEXTURE_MIN_FILTER*(v: expr): expr =
   (((v) and 0x00000001) shl 2)    #takes a GPU_TEXTURE_FILTER_PARAM
-  
+
 template GPU_TEXTURE_WRAP_S*(v: expr): expr =
   (((v) and 0x00000003) shl 12)   #takes a GPU_TEXTURE_WRAP_PARAM
-  
+
 template GPU_TEXTURE_WRAP_T*(v: expr): expr =
   (((v) and 0x00000003) shl 8)    #takes a GPU_TEXTURE_WRAP_PARAM
-  
+
 # Combiner buffer write config
 
 template GPU_TEV_BUFFER_WRITE_CONFIG*(stage0, stage1, stage2, stage3: expr): expr =
@@ -136,7 +136,7 @@ template GPU_ATTRIBFMT*(i, n, f: expr): expr =
   (((((n) - 1) shl 2) or ((f) and 3)) shl ((i) * 4))
 
 #*
-# Texture combiners sources 
+# Texture combiners sources
 #
 
 type
@@ -242,7 +242,7 @@ proc GPU_SetTexture*(unit: GPU_TEXUNIT; data: ptr u32; width: u16; height: u16;
                     param: u32; colorType: GPU_TEXCOLOR)
 #*
 #  @param borderColor The color used for the border when using the @ref GPU_CLAMP_TO_BORDER wrap mode
-# 
+#
 
 proc GPU_SetTextureBorderColor*(unit: GPU_TEXUNIT; borderColor: u32)
 proc GPU_SetTexEnv*(id: u8; rgbSources: u16; alphaSources: u16; rgbOperands: u16;

@@ -58,7 +58,7 @@ const
 type
   aptHookFn* = proc (hook: cint; param: pointer)
   aptHookCookie* = object
-    next*: ptr tag_aptHookCookie
+    next*: ptr aptHookCookie
     callback*: aptHookFn
     param*: pointer
 

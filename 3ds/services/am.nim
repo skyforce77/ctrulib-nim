@@ -12,7 +12,7 @@ type
 
 proc amInit*(): Result
 proc amExit*(): Result
-proc amGetSessionHandle*(): ptr Handle
+proc amGetSessionHandle*(): ptr Handle = nil
 # AM_GetTitleCount()
 #About: Gets the number of titles for a given mediatype
 #
@@ -110,7 +110,7 @@ proc AM_InstallNativeFirm*(): Result
 #
 #  mediatype		mediatype of title
 #  titleid		title id of title
-#  productcode           buffer to output the product code to (should have a length of 16) 
+#  productcode           buffer to output the product code to (should have a length of 16)
 #
 
 proc AM_GetTitleProductCode*(mediatype: u8; titleID: u64; productCode: cstring): Result
