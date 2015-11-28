@@ -179,13 +179,14 @@ type
 #}
 #
 
-proc getThreadLocalStorage*(): ptr u32 {.inline.} =
-  var ret: pointer
-  asm """mrc p15, 0, %[data], c13, c0, 3" : [data] "=r" (ret)"""
-  return cast[ptr u32](cast[u32](getThreadLocalStorage()) + u32(0x00000080))
+#//TODO Fix asm
+#proc getThreadLocalStorage*(): ptr u32 {.inline.} =
+#  var ret: pointer
+#  asm "mrc p15, 0, %[data], c13, c0, 3\" : [data] \"=r\" (ret)"
+#  return cast[ptr u32](cast[u32](getThreadLocalStorage()) + u32(0x00000080))
 
-proc getThreadCommandBuffer*(): ptr u32 {.inline, cdecl.} =
-  return cast[ptr u32](cast[u8](getThreadLocalStorage()) + 0x00000080)
+#proc getThreadCommandBuffer*(): ptr u32 {.inline, cdecl.} =
+#  return cast[ptr u32](cast[u8](getThreadLocalStorage()) + 0x00000080)
 
 #/@name Memory management
 #/@{
