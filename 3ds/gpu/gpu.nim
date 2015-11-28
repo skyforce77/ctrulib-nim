@@ -3,28 +3,28 @@ import
 
 #GPU
 
-proc GPU_Init*(gsphandle: ptr Handle) {.cdecl, importc: "GPU_Init", header: "gpu.h".}
+proc GPU_Init*(gsphandle: ptr Handle) {.cdecl, importc: "GPU_Init", header: "3ds.h".}
 proc GPU_Reset*(gxbuf: ptr u32; gpuBuf: ptr u32; gpuBufSize: u32) {.cdecl,
-    importc: "GPU_Reset", header: "gpu.h".}
+    importc: "GPU_Reset", header: "3ds.h".}
 #GPUCMD
 
 template GPUCMD_HEADER*(incremental, mask, reg: expr): expr =
   (((incremental) shl 31) or (((mask) and 0x0000000F) shl 16) or ((reg) and 0x000003FF))
 
 proc GPUCMD_SetBuffer*(adr: ptr u32; size: u32; offset: u32) {.cdecl,
-    importc: "GPUCMD_SetBuffer", header: "gpu.h".}
+    importc: "GPUCMD_SetBuffer", header: "3ds.h".}
 proc GPUCMD_SetBufferOffset*(offset: u32) {.cdecl,
-    importc: "GPUCMD_SetBufferOffset", header: "gpu.h".}
+    importc: "GPUCMD_SetBufferOffset", header: "3ds.h".}
 proc GPUCMD_GetBuffer*(adr: ptr ptr u32; size: ptr u32; offset: ptr u32) {.cdecl,
-    importc: "GPUCMD_GetBuffer", header: "gpu.h".}
+    importc: "GPUCMD_GetBuffer", header: "3ds.h".}
 proc GPUCMD_AddRawCommands*(cmd: ptr u32; size: u32) {.cdecl,
-    importc: "GPUCMD_AddRawCommands", header: "gpu.h".}
-proc GPUCMD_Run*(gxbuf: ptr u32) {.cdecl, importc: "GPUCMD_Run", header: "gpu.h".}
+    importc: "GPUCMD_AddRawCommands", header: "3ds.h".}
+proc GPUCMD_Run*(gxbuf: ptr u32) {.cdecl, importc: "GPUCMD_Run", header: "3ds.h".}
 proc GPUCMD_FlushAndRun*(gxbuf: ptr u32) {.cdecl, importc: "GPUCMD_FlushAndRun",
-                                       header: "gpu.h".}
+                                       header: "3ds.h".}
 proc GPUCMD_Add*(header: u32; param: ptr u32; paramlength: u32) {.cdecl,
-    importc: "GPUCMD_Add", header: "gpu.h".}
-proc GPUCMD_Finalize*() {.cdecl, importc: "GPUCMD_Finalize", header: "gpu.h".}
+    importc: "GPUCMD_Add", header: "3ds.h".}
+proc GPUCMD_Finalize*() {.cdecl, importc: "GPUCMD_Finalize", header: "3ds.h".}
 template GPUCMD_AddMaskedWrite*(reg, mask, val: expr): expr =
   GPUCMD_AddSingleParam(GPUCMD_HEADER(0, (mask), (reg)), (val))
 
@@ -210,76 +210,76 @@ type
 
 proc GPU_SetFloatUniform*(`type`: GPU_SHADER_TYPE; startreg: u32; data: ptr u32;
                          numreg: u32) {.cdecl, importc: "GPU_SetFloatUniform",
-                                      header: "gpu.h".}
+                                      header: "3ds.h".}
 proc GPU_SetViewport*(depthBuffer: ptr u32; colorBuffer: ptr u32; x: u32; y: u32; w: u32;
-                     h: u32) {.cdecl, importc: "GPU_SetViewport", header: "gpu.h".}
+                     h: u32) {.cdecl, importc: "GPU_SetViewport", header: "3ds.h".}
 proc GPU_SetScissorTest*(mode: GPU_SCISSORMODE; x: u32; y: u32; w: u32; h: u32) {.cdecl,
-    importc: "GPU_SetScissorTest", header: "gpu.h".}
+    importc: "GPU_SetScissorTest", header: "3ds.h".}
 proc GPU_DepthMap*(zScale: cfloat; zOffset: cfloat) {.cdecl, importc: "GPU_DepthMap",
-    header: "gpu.h".}
+    header: "3ds.h".}
 proc GPU_SetAlphaTest*(enable: bool; function: GPU_TESTFUNC; `ref`: u8) {.cdecl,
-    importc: "GPU_SetAlphaTest", header: "gpu.h".}
+    importc: "GPU_SetAlphaTest", header: "3ds.h".}
 proc GPU_SetDepthTestAndWriteMask*(enable: bool; function: GPU_TESTFUNC;
                                   writemask: GPU_WRITEMASK) {.cdecl,
-    importc: "GPU_SetDepthTestAndWriteMask", header: "gpu.h".}
+    importc: "GPU_SetDepthTestAndWriteMask", header: "3ds.h".}
 # GPU_WRITEMASK values can be ORed together
 
 proc GPU_SetStencilTest*(enable: bool; function: GPU_TESTFUNC; `ref`: u8;
                         input_mask: u8; write_mask: u8) {.cdecl,
-    importc: "GPU_SetStencilTest", header: "gpu.h".}
+    importc: "GPU_SetStencilTest", header: "3ds.h".}
 proc GPU_SetStencilOp*(sfail: GPU_STENCILOP; dfail: GPU_STENCILOP;
                       pass: GPU_STENCILOP) {.cdecl, importc: "GPU_SetStencilOp",
-    header: "gpu.h".}
+    header: "3ds.h".}
 proc GPU_SetFaceCulling*(mode: GPU_CULLMODE) {.cdecl, importc: "GPU_SetFaceCulling",
-    header: "gpu.h".}
+    header: "3ds.h".}
 # Only the first four tev stages can write to the combiner buffer, use GPU_TEV_BUFFER_WRITE_CONFIG to build the parameters
 
 proc GPU_SetCombinerBufferWrite*(rgb_config: u8; alpha_config: u8) {.cdecl,
-    importc: "GPU_SetCombinerBufferWrite", header: "gpu.h".}
+    importc: "GPU_SetCombinerBufferWrite", header: "3ds.h".}
 # these two can't be used together
 
 proc GPU_SetAlphaBlending*(colorEquation: GPU_BLENDEQUATION;
                           alphaEquation: GPU_BLENDEQUATION;
                           colorSrc: GPU_BLENDFACTOR; colorDst: GPU_BLENDFACTOR;
                           alphaSrc: GPU_BLENDFACTOR; alphaDst: GPU_BLENDFACTOR) {.
-    cdecl, importc: "GPU_SetAlphaBlending", header: "gpu.h".}
+    cdecl, importc: "GPU_SetAlphaBlending", header: "3ds.h".}
 proc GPU_SetColorLogicOp*(op: GPU_LOGICOP) {.cdecl, importc: "GPU_SetColorLogicOp",
-    header: "gpu.h".}
+    header: "3ds.h".}
 proc GPU_SetBlendingColor*(r: u8; g: u8; b: u8; a: u8) {.cdecl,
-    importc: "GPU_SetBlendingColor", header: "gpu.h".}
+    importc: "GPU_SetBlendingColor", header: "3ds.h".}
 proc GPU_SetAttributeBuffers*(totalAttributes: u8; baseAddress: ptr u32;
                              attributeFormats: u64; attributeMask: u16;
                              attributePermutation: u64; numBuffers: u8;
                              bufferOffsets: ptr u32; bufferPermutations: ptr u64;
                              bufferNumAttributes: ptr u8) {.cdecl,
-    importc: "GPU_SetAttributeBuffers", header: "gpu.h".}
+    importc: "GPU_SetAttributeBuffers", header: "3ds.h".}
 proc GPU_SetTextureEnable*(units: GPU_TEXUNIT) {.cdecl,
-    importc: "GPU_SetTextureEnable", header: "gpu.h".}
+    importc: "GPU_SetTextureEnable", header: "3ds.h".}
 # GPU_TEXUNITx values can be ORed together to enable multiple texture units
 
 proc GPU_SetTexture*(unit: GPU_TEXUNIT; data: ptr u32; width: u16; height: u16;
                     param: u32; colorType: GPU_TEXCOLOR) {.cdecl,
-    importc: "GPU_SetTexture", header: "gpu.h".}
+    importc: "GPU_SetTexture", header: "3ds.h".}
 #*
 #  @param borderColor The color used for the border when using the @ref GPU_CLAMP_TO_BORDER wrap mode
 #
 
 proc GPU_SetTextureBorderColor*(unit: GPU_TEXUNIT; borderColor: u32) {.cdecl,
-    importc: "GPU_SetTextureBorderColor", header: "gpu.h".}
+    importc: "GPU_SetTextureBorderColor", header: "3ds.h".}
 proc GPU_SetTexEnv*(id: u8; rgbSources: u16; alphaSources: u16; rgbOperands: u16;
                    alphaOperands: u16; rgbCombine: GPU_COMBINEFUNC;
                    alphaCombine: GPU_COMBINEFUNC; constantColor: u32) {.cdecl,
-    importc: "GPU_SetTexEnv", header: "gpu.h".}
+    importc: "GPU_SetTexEnv", header: "3ds.h".}
 proc GPU_DrawArray*(primitive: GPU_Primitive_t; first: u32; count: u32) {.cdecl,
-    importc: "GPU_DrawArray", header: "gpu.h".}
+    importc: "GPU_DrawArray", header: "3ds.h".}
 proc GPU_DrawElements*(primitive: GPU_Primitive_t; indexArray: ptr u32; n: u32) {.cdecl,
-    importc: "GPU_DrawElements", header: "gpu.h".}
-proc GPU_FinishDrawing*() {.cdecl, importc: "GPU_FinishDrawing", header: "gpu.h".}
+    importc: "GPU_DrawElements", header: "3ds.h".}
+proc GPU_FinishDrawing*() {.cdecl, importc: "GPU_FinishDrawing", header: "3ds.h".}
 proc GPU_SetShaderOutmap*(outmapData: array[8, u32]) {.cdecl,
-    importc: "GPU_SetShaderOutmap", header: "gpu.h".}
+    importc: "GPU_SetShaderOutmap", header: "3ds.h".}
 proc GPU_SendShaderCode*(`type`: GPU_SHADER_TYPE; data: ptr u32; offset: u16;
                         length: u16) {.cdecl, importc: "GPU_SendShaderCode",
-                                     header: "gpu.h".}
+                                     header: "3ds.h".}
 proc GPU_SendOperandDescriptors*(`type`: GPU_SHADER_TYPE; data: ptr u32; offset: u16;
                                 length: u16) {.cdecl,
-    importc: "GPU_SendOperandDescriptors", header: "gpu.h".}
+    importc: "GPU_SendOperandDescriptors", header: "3ds.h".}

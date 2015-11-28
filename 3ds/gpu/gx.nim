@@ -62,19 +62,19 @@ template GX_TRANSFER_SCALING*(x: expr): expr =
   ((x) shl 24)
 
 proc GX_RequestDma*(gxbuf: ptr u32; src: ptr u32; dst: ptr u32; length: u32): Result {.cdecl,
-    importc: "GX_RequestDma", header: "gx.h".}
+    importc: "GX_RequestDma", header: "3ds.h".}
 proc GX_SetCommandList_Last*(gxbuf: ptr u32; buf0a: ptr u32; buf0s: u32; flags: u8): Result {.
-    cdecl, importc: "GX_SetCommandList_Last", header: "gx.h".}
+    cdecl, importc: "GX_SetCommandList_Last", header: "3ds.h".}
 proc GX_SetMemoryFill*(gxbuf: ptr u32; buf0a: ptr u32; buf0v: u32; buf0e: ptr u32;
                       control0: u16; buf1a: ptr u32; buf1v: u32; buf1e: ptr u32;
                       control1: u16): Result {.cdecl, importc: "GX_SetMemoryFill",
-    header: "gx.h".}
+    header: "3ds.h".}
 proc GX_SetDisplayTransfer*(gxbuf: ptr u32; inadr: ptr u32; indim: u32; outadr: ptr u32;
                            outdim: u32; flags: u32): Result {.cdecl,
-    importc: "GX_SetDisplayTransfer", header: "gx.h".}
+    importc: "GX_SetDisplayTransfer", header: "3ds.h".}
 proc GX_SetTextureCopy*(gxbuf: ptr u32; inadr: ptr u32; indim: u32; outadr: ptr u32;
                        outdim: u32; size: u32; flags: u32): Result {.cdecl,
-    importc: "GX_SetTextureCopy", header: "gx.h".}
+    importc: "GX_SetTextureCopy", header: "3ds.h".}
 proc GX_SetCommandList_First*(gxbuf: ptr u32; buf0a: ptr u32; buf0s: u32; buf1a: ptr u32;
                              buf1s: u32; buf2a: ptr u32; buf2s: u32): Result {.cdecl,
-    importc: "GX_SetCommandList_First", header: "gx.h".}
+    importc: "GX_SetCommandList_First", header: "3ds.h".}

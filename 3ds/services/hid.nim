@@ -32,20 +32,20 @@ let KEY_CPAD_UP* = BIT(30)     # circle pad
 let KEY_CPAD_DOWN* = BIT(31)    # circle pad
 
 type
-  touchPosition* {.importc: "touchPosition", header: "hid.h".} = object
+  touchPosition* {.importc: "touchPosition", header: "3ds.h".} = object
     px* {.importc: "px".}: u16
     py* {.importc: "py".}: u16
 
-  circlePosition* {.importc: "circlePosition", header: "hid.h".} = object
+  circlePosition* {.importc: "circlePosition", header: "3ds.h".} = object
     dx* {.importc: "dx".}: s16
     dy* {.importc: "dy".}: s16
 
-  accelVector* {.importc: "accelVector", header: "hid.h".} = object
+  accelVector* {.importc: "accelVector", header: "3ds.h".} = object
     x* {.importc: "x".}: s16
     y* {.importc: "y".}: s16
     z* {.importc: "z".}: s16
 
-  angularRate* {.importc: "angularRate", header: "hid.h".} = object
+  angularRate* {.importc: "angularRate", header: "3ds.h".} = object
     x* {.importc: "x".}: s16     #roll
     z* {.importc: "z".}: s16     #yaw
     y* {.importc: "y".}: s16     #pitch
@@ -60,26 +60,26 @@ type
 
 
 
-var hidMemHandle* {.importc: "hidMemHandle", header: "hid.h".}: Handle
+var hidMemHandle* {.importc: "hidMemHandle", header: "3ds.h".}: Handle
 
-var hidSharedMem* {.importc: "hidSharedMem", header: "hid.h".}: ptr vu32
+var hidSharedMem* {.importc: "hidSharedMem", header: "3ds.h".}: ptr vu32
 
-proc hidInit*(): Result {.cdecl, importc: "hidInit", header: "hid.h".}
-proc hidExit*() {.cdecl, importc: "hidExit", header: "hid.h".}
-proc hidScanInput*() {.cdecl, importc: "hidScanInput", header: "hid.h".}
-proc hidKeysHeld*(): u32 {.cdecl, importc: "hidKeysHeld", header: "hid.h".}
-proc hidKeysDown*(): u32 {.cdecl, importc: "hidKeysDown", header: "hid.h".}
-proc hidKeysUp*(): u32 {.cdecl, importc: "hidKeysUp", header: "hid.h".}
+proc hidInit*(): Result {.cdecl, importc: "hidInit", header: "3ds.h".}
+proc hidExit*() {.cdecl, importc: "hidExit", header: "3ds.h".}
+proc hidScanInput*() {.cdecl, importc: "hidScanInput", header: "3ds.h".}
+proc hidKeysHeld*(): u32 {.cdecl, importc: "hidKeysHeld", header: "3ds.h".}
+proc hidKeysDown*(): u32 {.cdecl, importc: "hidKeysDown", header: "3ds.h".}
+proc hidKeysUp*(): u32 {.cdecl, importc: "hidKeysUp", header: "3ds.h".}
 proc hidTouchRead*(pos: ptr touchPosition) {.cdecl, importc: "hidTouchRead",
-    header: "hid.h".}
+    header: "3ds.h".}
 proc hidCircleRead*(pos: ptr circlePosition) {.cdecl, importc: "hidCircleRead",
-    header: "hid.h".}
+    header: "3ds.h".}
 proc hidAccelRead*(vector: ptr accelVector) {.cdecl, importc: "hidAccelRead",
-    header: "hid.h".}
+    header: "3ds.h".}
 proc hidGyroRead*(rate: ptr angularRate) {.cdecl, importc: "hidGyroRead",
-                                       header: "hid.h".}
+                                       header: "3ds.h".}
 proc hidWaitForEvent*(id: HID_Event; nextEvent: bool) {.cdecl,
-    importc: "hidWaitForEvent", header: "hid.h".}
+    importc: "hidWaitForEvent", header: "3ds.h".}
 # libnds compatibility defines
 
 const
@@ -93,18 +93,18 @@ const
 proc HIDUSER_GetHandles*(outMemHandle: ptr Handle; eventpad0: ptr Handle;
                         eventpad1: ptr Handle; eventaccel: ptr Handle;
                         eventgyro: ptr Handle; eventdebugpad: ptr Handle): Result {.
-    cdecl, importc: "HIDUSER_GetHandles", header: "hid.h".}
+    cdecl, importc: "HIDUSER_GetHandles", header: "3ds.h".}
 proc HIDUSER_EnableAccelerometer*(): Result {.cdecl,
-    importc: "HIDUSER_EnableAccelerometer", header: "hid.h".}
+    importc: "HIDUSER_EnableAccelerometer", header: "3ds.h".}
 proc HIDUSER_DisableAccelerometer*(): Result {.cdecl,
-    importc: "HIDUSER_DisableAccelerometer", header: "hid.h".}
+    importc: "HIDUSER_DisableAccelerometer", header: "3ds.h".}
 proc HIDUSER_EnableGyroscope*(): Result {.cdecl, importc: "HIDUSER_EnableGyroscope",
-                                       header: "hid.h".}
+                                       header: "3ds.h".}
 proc HIDUSER_DisableGyroscope*(): Result {.cdecl,
                                         importc: "HIDUSER_DisableGyroscope",
-                                        header: "hid.h".}
+                                        header: "3ds.h".}
 proc HIDUSER_GetGyroscopeRawToDpsCoefficient*(coeff: ptr cfloat): Result {.cdecl,
-    importc: "HIDUSER_GetGyroscopeRawToDpsCoefficient", header: "hid.h".}
+    importc: "HIDUSER_GetGyroscopeRawToDpsCoefficient", header: "3ds.h".}
 proc HIDUSER_GetSoundVolume*(volume: ptr u8): Result {.cdecl,
-    importc: "HIDUSER_GetSoundVolume", header: "hid.h".}
+    importc: "HIDUSER_GetSoundVolume", header: "3ds.h".}
 #Return the volume slider value (0-63)

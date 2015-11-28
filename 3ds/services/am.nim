@@ -3,17 +3,17 @@
 #
 
 type
-  TitleList* {.importc: "TitleList", header: "am.h".} = object
+  TitleList* {.importc: "TitleList", header: "3ds.h".} = object
     titleID* {.importc: "titleID".}: u64
     size* {.importc: "size".}: u64
     titleVersion* {.importc: "titleVersion".}: u16
     unknown2* {.importc: "unknown2".}: array[6, u8]
 
 
-proc amInit*(): Result {.cdecl, importc: "amInit", header: "am.h".}
-proc amExit*(): Result {.cdecl, importc: "amExit", header: "am.h".}
+proc amInit*(): Result {.cdecl, importc: "amInit", header: "3ds.h".}
+proc amExit*(): Result {.cdecl, importc: "amExit", header: "3ds.h".}
 proc amGetSessionHandle*(): ptr Handle {.cdecl, importc: "amGetSessionHandle",
-                                     header: "am.h".}
+                                     header: "3ds.h".}
 # AM_GetTitleCount()
 #About: Gets the number of titles for a given mediatype
 #
@@ -22,7 +22,7 @@ proc amGetSessionHandle*(): ptr Handle {.cdecl, importc: "amGetSessionHandle",
 #
 
 proc AM_GetTitleCount*(mediatype: u8; count: ptr u32): Result {.cdecl,
-    importc: "AM_GetTitleCount", header: "am.h".}
+    importc: "AM_GetTitleCount", header: "3ds.h".}
 # AM_GetTitleList()
 #About: Writes a titleid list for a mediatype to a buffer
 #
@@ -32,7 +32,7 @@ proc AM_GetTitleCount*(mediatype: u8; count: ptr u32): Result {.cdecl,
 #
 
 proc AM_GetTitleIdList*(mediatype: u8; count: u32; titleIDs: ptr u64): Result {.cdecl,
-    importc: "AM_GetTitleIdList", header: "am.h".}
+    importc: "AM_GetTitleIdList", header: "3ds.h".}
 # AM_GetDeviceId()
 #About: Gets a 32bit device id, it's used for some key slot inits
 #
@@ -40,7 +40,7 @@ proc AM_GetTitleIdList*(mediatype: u8; count: u32; titleIDs: ptr u64): Result {.
 #
 
 proc AM_GetDeviceId*(deviceID: ptr u32): Result {.cdecl, importc: "AM_GetDeviceId",
-    header: "am.h".}
+    header: "3ds.h".}
 # AM_ListTitles()
 #About: Get a list with details about the installed titles
 #
@@ -52,7 +52,7 @@ proc AM_GetDeviceId*(deviceID: ptr u32): Result {.cdecl, importc: "AM_GetDeviceI
 
 proc AM_ListTitles*(mediatype: u8; titleCount: u32; titleIdList: ptr u64;
                    titleList: ptr TitleList): Result {.cdecl,
-    importc: "AM_ListTitles", header: "am.h".}
+    importc: "AM_ListTitles", header: "3ds.h".}
 #*** Title Install Methods ***
 # AM_StartCiaInstall()
 #About: Inits CIA install process, the returned ciahandle is where the data for CIA should be written to
@@ -62,7 +62,7 @@ proc AM_ListTitles*(mediatype: u8; titleCount: u32; titleIdList: ptr u64;
 #
 
 proc AM_StartCiaInstall*(mediatype: u8; ciaHandle: ptr Handle): Result {.cdecl,
-    importc: "AM_StartCiaInstall", header: "am.h".}
+    importc: "AM_StartCiaInstall", header: "3ds.h".}
 # AM_StartDlpChildCiaInstall()
 #About: Inits CIA install process, the returned ciahandle is where the data for CIA should be written to
 #Note: This is for installing DLP CIAs only, mediatype is hardcoded to be NAND
@@ -71,7 +71,7 @@ proc AM_StartCiaInstall*(mediatype: u8; ciaHandle: ptr Handle): Result {.cdecl,
 #
 
 proc AM_StartDlpChildCiaInstall*(ciaHandle: ptr Handle): Result {.cdecl,
-    importc: "AM_StartDlpChildCiaInstall", header: "am.h".}
+    importc: "AM_StartDlpChildCiaInstall", header: "3ds.h".}
 # AM_CancelCIAInstall()
 #About: Abort CIA install process
 #
@@ -79,7 +79,7 @@ proc AM_StartDlpChildCiaInstall*(ciaHandle: ptr Handle): Result {.cdecl,
 #
 
 proc AM_CancelCIAInstall*(ciaHandle: ptr Handle): Result {.cdecl,
-    importc: "AM_CancelCIAInstall", header: "am.h".}
+    importc: "AM_CancelCIAInstall", header: "3ds.h".}
 # AM_FinishCiaInstall()
 #About: Once all data is written to the cia handle, this command signals AM to proceed with CIA install.
 #Note: AM closes the cia handle provided here
@@ -89,7 +89,7 @@ proc AM_CancelCIAInstall*(ciaHandle: ptr Handle): Result {.cdecl,
 #
 
 proc AM_FinishCiaInstall*(mediatype: u8; ciaHandle: ptr Handle): Result {.cdecl,
-    importc: "AM_FinishCiaInstall", header: "am.h".}
+    importc: "AM_FinishCiaInstall", header: "3ds.h".}
 #*** Title Delete Methods ***
 # AM_DeleteTitle()
 #About: Deletes any title on NAND/SDMC
@@ -100,7 +100,7 @@ proc AM_FinishCiaInstall*(mediatype: u8; ciaHandle: ptr Handle): Result {.cdecl,
 #
 
 proc AM_DeleteTitle*(mediatype: u8; titleID: u64): Result {.cdecl,
-    importc: "AM_DeleteTitle", header: "am.h".}
+    importc: "AM_DeleteTitle", header: "3ds.h".}
 # AM_DeleteAppTitle()
 #About: Deletes any title on NAND/SDMC
 #Note: If the title has the system category bit set, this will fail
@@ -110,13 +110,13 @@ proc AM_DeleteTitle*(mediatype: u8; titleID: u64): Result {.cdecl,
 #
 
 proc AM_DeleteAppTitle*(mediatype: u8; titleID: u64): Result {.cdecl,
-    importc: "AM_DeleteAppTitle", header: "am.h".}
+    importc: "AM_DeleteAppTitle", header: "3ds.h".}
 # AM_InstallNativeFirm()
 #About: Installs NATIVE_FIRM to NAND (firm0:/ & firm1:/) from a CXI
 #
 
 proc AM_InstallNativeFirm*(): Result {.cdecl, importc: "AM_InstallNativeFirm",
-                                    header: "am.h".}
+                                    header: "3ds.h".}
 # AM_GetTitleProductCode()
 #About: Gets the product code of a title based on its title id.
 #
@@ -126,7 +126,7 @@ proc AM_InstallNativeFirm*(): Result {.cdecl, importc: "AM_InstallNativeFirm",
 #
 
 proc AM_GetTitleProductCode*(mediatype: u8; titleID: u64; productCode: cstring): Result {.
-    cdecl, importc: "AM_GetTitleProductCode", header: "am.h".}
+    cdecl, importc: "AM_GetTitleProductCode", header: "3ds.h".}
 # AM_GetCiaFileInfo()
 #About: Reads a CIA file and returns a TitleList entry for it.
 #
@@ -136,4 +136,4 @@ proc AM_GetTitleProductCode*(mediatype: u8; titleID: u64; productCode: cstring):
 #
 
 proc AM_GetCiaFileInfo*(mediatype: u8; titleEntry: ptr TitleList; fileHandle: Handle): Result {.
-    cdecl, importc: "AM_GetCiaFileInfo", header: "am.h".}
+    cdecl, importc: "AM_GetCiaFileInfo", header: "3ds.h".}

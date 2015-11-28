@@ -18,7 +18,7 @@ type
 #! a font struct for the console.
 
 type
-  ConsoleFont* {.importc: "ConsoleFont", header: "console.h".} = object
+  ConsoleFont* {.importc: "ConsoleFont", header: "3ds.h".} = object
     gfx* {.importc: "gfx".}: ptr u8 #!< A pointer to the font graphics
     asciiOffset* {.importc: "asciiOffset".}: u16 #!<  Offset to the first valid character in the font table
     numChars* {.importc: "numChars".}: u16 #!< Number of characters in the font graphics
@@ -53,7 +53,7 @@ type
 #
 
 type
-  PrintConsole* {.importc: "PrintConsole", header: "console.h".} = object
+  PrintConsole* {.importc: "PrintConsole", header: "3ds.h".} = object
     font* {.importc: "font".}: ConsoleFont #!< font of the console.
     frameBuffer* {.importc: "frameBuffer".}: ptr u16 #!< framebuffer address.
     cursorX* {.importc: "cursorX".}: cint #!< Current X location of the cursor (as a tile offset by default)
@@ -101,7 +101,7 @@ type
 #
 
 proc consoleSetFont*(console: ptr PrintConsole; font: ptr ConsoleFont) {.cdecl,
-    importc: "consoleSetFont", header: "console.h".}
+    importc: "consoleSetFont", header: "3ds.h".}
 #!	\brief Sets the print window
 # \param console console to set, if NULL it will set the current console window
 # \param x x location of the window
@@ -112,21 +112,21 @@ proc consoleSetFont*(console: ptr PrintConsole; font: ptr ConsoleFont) {.cdecl,
 
 proc consoleSetWindow*(console: ptr PrintConsole; x: cint; y: cint; width: cint;
                       height: cint) {.cdecl, importc: "consoleSetWindow",
-                                    header: "console.h".}
+                                    header: "3ds.h".}
 #!	\brief Gets a pointer to the console with the default values
 # this should only be used when using a single console or without changing the console that is returned, other wise use consoleInit()
 # \return A pointer to the console with the default values
 #
 
 proc consoleGetDefault*(): ptr PrintConsole {.cdecl, importc: "consoleGetDefault",
-    header: "console.h".}
+    header: "3ds.h".}
 #!	\brief Make the specified console the render target
 # \param console A pointer to the console struct (must have been initialized with consoleInit(PrintConsole* console)
 # \return a pointer to the previous console
 #
 
 proc consoleSelect*(console: ptr PrintConsole): ptr PrintConsole {.cdecl,
-    importc: "consoleSelect", header: "console.h".}
+    importc: "consoleSelect", header: "3ds.h".}
 #!	\brief Initialise the console.
 # \param screen The screen to use for the console
 # \param console A pointer to the console data to initialze (if it's NULL, the default console will be used)
@@ -134,13 +134,13 @@ proc consoleSelect*(console: ptr PrintConsole): ptr PrintConsole {.cdecl,
 #
 
 proc consoleInit*(screen: gfxScreen_t; console: ptr PrintConsole): ptr PrintConsole {.
-    cdecl, importc: "consoleInit", header: "console.h".}
+    cdecl, importc: "consoleInit", header: "3ds.h".}
 #!	\brief Initializes debug console output on stderr to the specified device
 # \param device The debug device (or devices) to output debug print statements to
 #
 
 proc consoleDebugInit*(device: debugDevice) {.cdecl, importc: "consoleDebugInit",
-    header: "console.h".}
+    header: "3ds.h".}
 #! Clears the screan by using iprintf("\x1b[2J");
 
-proc consoleClear*() {.cdecl, importc: "consoleClear", header: "console.h".}
+proc consoleClear*() {.cdecl, importc: "consoleClear", header: "3ds.h".}
