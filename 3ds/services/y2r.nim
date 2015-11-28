@@ -10,7 +10,7 @@
 #
 
 type
-  Y2R_InputFormat* = enum
+  Y2R_InputFormat* {.size: sizeof(cint).} = enum
     INPUT_YUV422_INDIV_8 = 0x00000000, #/<  8-bit per component, planar YUV 4:2:2, 16bpp, (1 Cr & Cb sample per 2x1 Y samples).\n Usually named YUV422P.
     INPUT_YUV420_INDIV_8 = 0x00000001, #/<  8-bit per component, planar YUV 4:2:0, 12bpp, (1 Cr & Cb sample per 2x2 Y samples).\n Usually named YUV420P.
     INPUT_YUV422_INDIV_16 = 0x00000002, #/< 16-bit per component, planar YUV 4:2:2, 32bpp, (1 Cr & Cb sample per 2x1 Y samples).\n Usually named YUV422P16.
@@ -25,7 +25,7 @@ type
 #
 
 type
-  Y2R_OutputFormat* = enum
+  Y2R_OutputFormat* {.size: sizeof(cint).} = enum
     OUTPUT_RGB_32 = 0x00000000, #/< The alpha component is the 8-bit value set by @ref Y2RU_SetAlpha
     OUTPUT_RGB_24 = 0x00000001, OUTPUT_RGB_16_555 = 0x00000002, #/< The alpha bit is the 7th bit of the alpha value set by @ref Y2RU_SetAlpha
     OUTPUT_RGB_16_565 = 0x00000003
@@ -36,7 +36,7 @@ type
 #
 
 type
-  Y2R_Rotation* = enum
+  Y2R_Rotation* {.size: sizeof(cint).} = enum
     ROTATION_NONE = 0x00000000, ROTATION_CLOCKWISE_90 = 0x00000001,
     ROTATION_CLOCKWISE_180 = 0x00000002, ROTATION_CLOCKWISE_270 = 0x00000003
 
@@ -48,7 +48,7 @@ type
 #
 
 type
-  Y2R_BlockAlignment* = enum
+  Y2R_BlockAlignment* {.size: sizeof(cint).} = enum
     BLOCK_LINE = 0x00000000,    #/< The result buffer will be laid out in linear format, the usual way.
     BLOCK_8_BY_8 = 0x00000001   #/< The result will be stored as 8x8 blocks in Z-order.\n Useful for textures since it is the format used by the PICA200.
 
@@ -69,15 +69,15 @@ type
 #
 
 type
-  Y2R_ColorCoefficients* = object
-    rgb_Y*: u16
-    r_V*: u16
-    g_V*: u16
-    g_U*: u16
-    b_U*: u16
-    r_offset*: u16
-    g_offset*: u16
-    b_offset*: u16
+  Y2R_ColorCoefficients* {.importc: "Y2R_ColorCoefficients", header: "y2r.h".} = object
+    rgb_Y* {.importc: "rgb_Y".}: u16
+    r_V* {.importc: "r_V".}: u16
+    g_V* {.importc: "g_V".}: u16
+    g_U* {.importc: "g_U".}: u16
+    b_U* {.importc: "b_U".}: u16
+    r_offset* {.importc: "r_offset".}: u16
+    g_offset* {.importc: "g_offset".}: u16
+    b_offset* {.importc: "b_offset".}: u16
 
 
 #*
@@ -87,7 +87,7 @@ type
 #
 
 type
-  Y2R_StandardCoefficient* = enum
+  Y2R_StandardCoefficient* {.size: sizeof(cint).} = enum
     COEFFICIENT_ITU_R_BT_601 = 0x00000000, #/< Coefficients from the ITU-R BT.601 standard with PC ranges.
     COEFFICIENT_ITU_R_BT_709 = 0x00000001, #/< Coefficients from the ITU-R BT.709 standard with PC ranges.
     COEFFICIENT_ITU_R_BT_601_SCALING = 0x00000002, #/< Coefficients from the ITU-R BT.601 standard with TV ranges.
@@ -102,16 +102,16 @@ type
 #
 
 type
-  Y2R_ConversionParams* = object
-    input_format* {.bitsize: 8.}: Y2R_InputFormat #/< Value passed to @ref Y2RU_SetInputFormat
-    output_format* {.bitsize: 8.}: Y2R_OutputFormat #/< Value passed to @ref Y2RU_SetOutputFormat
-    rotation* {.bitsize: 8.}: Y2R_Rotation #/< Value passed to @ref Y2RU_SetRotation
-    block_alignment* {.bitsize: 8.}: Y2R_BlockAlignment #/< Value passed to @ref Y2RU_SetBlockAlignment
-    input_line_width*: s16     #/< Value passed to @ref Y2RU_SetInputLineWidth
-    input_lines*: s16          #/< Value passed to @ref Y2RU_SetInputLines
-    standard_coefficient* {.bitsize: 8.}: Y2R_StandardCoefficient #/< Value passed to @ref Y2RU_SetStandardCoefficient
-    unused*: u8
-    alpha*: u16                #/< Value passed to @ref Y2RU_SetAlpha
+  Y2R_ConversionParams* {.importc: "Y2R_ConversionParams", header: "y2r.h".} = object
+    input_format* {.importc: "input_format",bitsize: 8.}: Y2R_InputFormat #/< Value passed to @ref Y2RU_SetInputFormat
+    output_format* {.importc: "output_format",bitsize: 8.}: Y2R_OutputFormat #/< Value passed to @ref Y2RU_SetOutputFormat
+    rotation* {.importc: "rotation",bitsize: 8.}: Y2R_Rotation #/< Value passed to @ref Y2RU_SetRotation
+    block_alignment* {.importc: "block_alignment",bitsize: 8.}: Y2R_BlockAlignment #/< Value passed to @ref Y2RU_SetBlockAlignment
+    input_line_width* {.importc: "input_line_width".}: s16 #/< Value passed to @ref Y2RU_SetInputLineWidth
+    input_lines* {.importc: "input_lines".}: s16 #/< Value passed to @ref Y2RU_SetInputLines
+    standard_coefficient* {.importc: "standard_coefficient",bitsize: 8.}: Y2R_StandardCoefficient #/< Value passed to @ref Y2RU_SetStandardCoefficient
+    unused* {.importc: "unused".}: u8
+    alpha* {.importc: "alpha".}: u16 #/< Value passed to @ref Y2RU_SetAlpha
 
 
 #*
@@ -120,28 +120,30 @@ type
 #  This will internally get the handle of the service, and on success call Y2RU_DriverInitialize.
 #
 
-proc y2rInit*(): Result
+proc y2rInit*(): Result {.cdecl, importc: "y2rInit", header: "y2r.h".}
 #*
 #  @brief Closes the y2r service.
 #
 #  This will internally call Y2RU_DriverFinalize and close the handle of the service.
 #
 
-proc y2rExit*(): Result
+proc y2rExit*(): Result {.cdecl, importc: "y2rExit", header: "y2r.h".}
 #*
 #  @brief Used to configure the input format.
 #
 #  @note Prefer using @ref Y2RU_SetConversionParams if you have to set multiple parameters.
 #
 
-proc Y2RU_SetInputFormat*(format: Y2R_InputFormat): Result
+proc Y2RU_SetInputFormat*(format: Y2R_InputFormat): Result {.cdecl,
+    importc: "Y2RU_SetInputFormat", header: "y2r.h".}
 #*
 #  @brief Used to configure the output format.
 #
 #  @note Prefer using @ref Y2RU_SetConversionParams if you have to set multiple parameters.
 #
 
-proc Y2RU_SetOutputFormat*(format: Y2R_OutputFormat): Result
+proc Y2RU_SetOutputFormat*(format: Y2R_OutputFormat): Result {.cdecl,
+    importc: "Y2RU_SetOutputFormat", header: "y2r.h".}
 #*
 #  @brief Used to configure the rotation of the output.
 #
@@ -150,14 +152,16 @@ proc Y2RU_SetOutputFormat*(format: Y2R_OutputFormat): Result
 #  @note Prefer using @ref Y2RU_SetConversionParams if you have to set multiple parameters.
 #
 
-proc Y2RU_SetRotation*(rotation: Y2R_Rotation): Result
+proc Y2RU_SetRotation*(rotation: Y2R_Rotation): Result {.cdecl,
+    importc: "Y2RU_SetRotation", header: "y2r.h".}
 #*
 #  @brief Used to configure the alignment of the output buffer.
 #
 #  @note Prefer using @ref Y2RU_SetConversionParams if you have to set multiple parameters.
 #
 
-proc Y2RU_SetBlockAlignment*(alignment: Y2R_BlockAlignment): Result = 0
+proc Y2RU_SetBlockAlignment*(alignment: Y2R_BlockAlignment): Result {.cdecl,
+    importc: "Y2RU_SetBlockAlignment", header: "y2r.h".}
 #*
 #  @brief Used to configure the width of the image.
 #  @param line_width Width of the image in pixels. Must be a multiple of 8, up to 1024.
@@ -165,7 +169,8 @@ proc Y2RU_SetBlockAlignment*(alignment: Y2R_BlockAlignment): Result = 0
 #  @note Prefer using @ref Y2RU_SetConversionParams if you have to set multiple parameters.
 #
 
-proc Y2RU_SetInputLineWidth*(line_width: u16): Result
+proc Y2RU_SetInputLineWidth*(line_width: u16): Result {.cdecl,
+    importc: "Y2RU_SetInputLineWidth", header: "y2r.h".}
 #*
 #  @brief Used to configure the height of the image.
 #  @param num_lines Number of lines to be converted.
@@ -176,7 +181,8 @@ proc Y2RU_SetInputLineWidth*(line_width: u16): Result
 #  @note Prefer using @ref Y2RU_SetConversionParams if you have to set multiple parameters.
 #
 
-proc Y2RU_SetInputLines*(num_lines: u16): Result
+proc Y2RU_SetInputLines*(num_lines: u16): Result {.cdecl,
+    importc: "Y2RU_SetInputLines", header: "y2r.h".}
 #*
 #  @brief Used to configure the color conversion formula.
 #
@@ -185,7 +191,8 @@ proc Y2RU_SetInputLines*(num_lines: u16): Result
 #  @note Prefer using @ref Y2RU_SetConversionParams if you have to set multiple parameters.
 #
 
-proc Y2RU_SetCoefficients*(coefficients: ptr Y2R_ColorCoefficients): Result
+proc Y2RU_SetCoefficients*(coefficients: ptr Y2R_ColorCoefficients): Result {.cdecl,
+    importc: "Y2RU_SetCoefficients", header: "y2r.h".}
 #*
 #  @brief Used to configure the color conversion formula with ITU stantards coefficients.
 #
@@ -194,7 +201,8 @@ proc Y2RU_SetCoefficients*(coefficients: ptr Y2R_ColorCoefficients): Result
 #  @note Prefer using @ref Y2RU_SetConversionParams if you have to set multiple parameters.
 #
 
-proc Y2RU_SetStandardCoefficient*(coefficient: Y2R_StandardCoefficient): Result
+proc Y2RU_SetStandardCoefficient*(coefficient: Y2R_StandardCoefficient): Result {.
+    cdecl, importc: "Y2RU_SetStandardCoefficient", header: "y2r.h".}
 #*
 #  @brief Used to configure the alpha value of the output.
 #  @param alpha 8-bit value to be used for the output when the format requires it.
@@ -202,7 +210,8 @@ proc Y2RU_SetStandardCoefficient*(coefficient: Y2R_StandardCoefficient): Result
 #  @note Prefer using @ref Y2RU_SetConversionParams if you have to set multiple parameters.
 #
 
-proc Y2RU_SetAlpha*(alpha: u16): Result = 0
+proc Y2RU_SetAlpha*(alpha: u16): Result {.cdecl, importc: "Y2RU_SetAlpha",
+                                      header: "y2r.h".}
 #*
 #  @brief Used to enable the end of conversion interrupt.
 #  @param should_interrupt Enables the interrupt if true, disable it if false.
@@ -214,7 +223,8 @@ proc Y2RU_SetAlpha*(alpha: u16): Result = 0
 #  @note It seems that the event can be fired too soon in some cases, depending the transfer_unit size.\n Please see the note at @ref Y2RU_SetReceiving
 #
 
-proc Y2RU_SetTransferEndInterrupt*(should_interrupt: bool): Result
+proc Y2RU_SetTransferEndInterrupt*(should_interrupt: bool): Result {.cdecl,
+    importc: "Y2RU_SetTransferEndInterrupt", header: "y2r.h".}
 #*
 #  @brief Gets an handle to the end of conversion event.
 #  @param end_event Pointer to the event handle to be set to the end of conversion event. It isn't necessary to create or close this handle.
@@ -225,7 +235,8 @@ proc Y2RU_SetTransferEndInterrupt*(should_interrupt: bool): Result
 #  @note It is recommended to use a timeout when waiting on this event, as it sometimes (but rarely) isn't triggered.
 #
 
-proc Y2RU_GetTransferEndEvent*(end_event: ptr Handle): Result
+proc Y2RU_GetTransferEndEvent*(end_event: ptr Handle): Result {.cdecl,
+    importc: "Y2RU_GetTransferEndEvent", header: "y2r.h".}
 #*
 #  @brief Configures the Y plane buffer.
 #  @param src_buf A pointer to the beginning of your Y data buffer.
@@ -240,7 +251,8 @@ proc Y2RU_GetTransferEndEvent*(end_event: ptr Handle): Result
 #
 
 proc Y2RU_SetSendingY*(src_buf: pointer; image_size: u32; transfer_unit: s16;
-                      transfer_gap: s16): Result
+                      transfer_gap: s16): Result {.cdecl,
+    importc: "Y2RU_SetSendingY", header: "y2r.h".}
 #*
 #  @brief Configures the U plane buffer.
 #  @param src_buf A pointer to the beginning of your Y data buffer.
@@ -255,7 +267,8 @@ proc Y2RU_SetSendingY*(src_buf: pointer; image_size: u32; transfer_unit: s16;
 #
 
 proc Y2RU_SetSendingU*(src_buf: pointer; image_size: u32; transfer_unit: s16;
-                      transfer_gap: s16): Result
+                      transfer_gap: s16): Result {.cdecl,
+    importc: "Y2RU_SetSendingU", header: "y2r.h".}
 #*
 #  @brief Configures the V plane buffer.
 #  @param src_buf A pointer to the beginning of your Y data buffer.
@@ -270,7 +283,8 @@ proc Y2RU_SetSendingU*(src_buf: pointer; image_size: u32; transfer_unit: s16;
 #
 
 proc Y2RU_SetSendingV*(src_buf: pointer; image_size: u32; transfer_unit: s16;
-                      transfer_gap: s16): Result
+                      transfer_gap: s16): Result {.cdecl,
+    importc: "Y2RU_SetSendingV", header: "y2r.h".}
 #*
 #  @brief Configures the YUYV source buffer.
 #  @param src_buf A pointer to the beginning of your Y data buffer.
@@ -285,7 +299,8 @@ proc Y2RU_SetSendingV*(src_buf: pointer; image_size: u32; transfer_unit: s16;
 #
 
 proc Y2RU_SetSendingYUYV*(src_buf: pointer; image_size: u32; transfer_unit: s16;
-                         transfer_gap: s16): Result
+                         transfer_gap: s16): Result {.cdecl,
+    importc: "Y2RU_SetSendingYUYV", header: "y2r.h".}
 #*
 #  @brief Configures the destination buffer.
 #  @param src_buf A pointer to the beginning of your destination buffer in FCRAM
@@ -308,7 +323,8 @@ proc Y2RU_SetSendingYUYV*(src_buf: pointer; image_size: u32; transfer_unit: s16;
 #
 
 proc Y2RU_SetReceiving*(dst_buf: pointer; image_size: u32; transfer_unit: s16;
-                       transfer_gap: s16): Result
+                       transfer_gap: s16): Result {.cdecl,
+    importc: "Y2RU_SetReceiving", header: "y2r.h".}
 #*
 #  @brief Checks if the DMA has finished sending the Y buffer.
 #  @param is_done pointer to the boolean that will hold the result
@@ -316,7 +332,8 @@ proc Y2RU_SetReceiving*(dst_buf: pointer; image_size: u32; transfer_unit: s16;
 #  True if the DMA has finished transferring the Y plane, false otherwise. To be used with @ref Y2RU_SetSendingY.
 #
 
-proc Y2RU_IsDoneSendingY*(is_done: ptr bool): Result
+proc Y2RU_IsDoneSendingY*(is_done: ptr bool): Result {.cdecl,
+    importc: "Y2RU_IsDoneSendingY", header: "y2r.h".}
 #*
 #  @brief Checks if the DMA has finished sending the U buffer.
 #  @param is_done pointer to the boolean that will hold the result
@@ -324,7 +341,8 @@ proc Y2RU_IsDoneSendingY*(is_done: ptr bool): Result
 #  True if the DMA has finished transferring the U plane, false otherwise. To be used with @ref Y2RU_SetSendingU.
 #
 
-proc Y2RU_IsDoneSendingU*(is_done: ptr bool): Result
+proc Y2RU_IsDoneSendingU*(is_done: ptr bool): Result {.cdecl,
+    importc: "Y2RU_IsDoneSendingU", header: "y2r.h".}
 #*
 #  @brief Checks if the DMA has finished sending the V buffer.
 #  @param is_done pointer to the boolean that will hold the result
@@ -332,7 +350,8 @@ proc Y2RU_IsDoneSendingU*(is_done: ptr bool): Result
 #  True if the DMA has finished transferring the V plane, false otherwise. To be used with @ref Y2RU_SetSendingV.
 #
 
-proc Y2RU_IsDoneSendingV*(is_done: ptr bool): Result
+proc Y2RU_IsDoneSendingV*(is_done: ptr bool): Result {.cdecl,
+    importc: "Y2RU_IsDoneSendingV", header: "y2r.h".}
 #*
 #  @brief Checks if the DMA has finished sending the YUYV buffer.
 #  @param is_done pointer to the boolean that will hold the result
@@ -340,7 +359,8 @@ proc Y2RU_IsDoneSendingV*(is_done: ptr bool): Result
 #  True if the DMA has finished transferring the YUYV buffer, false otherwise. To be used with @ref Y2RU_SetSendingYUYV.
 #
 
-proc Y2RU_IsDoneSendingYUYV*(is_done: ptr bool): Result
+proc Y2RU_IsDoneSendingYUYV*(is_done: ptr bool): Result {.cdecl,
+    importc: "Y2RU_IsDoneSendingYUYV", header: "y2r.h".}
 #*
 #  @brief Checks if the DMA has finished sending the converted result.
 #  @param is_done pointer to the boolean that will hold the result
@@ -348,34 +368,43 @@ proc Y2RU_IsDoneSendingYUYV*(is_done: ptr bool): Result
 #  True if the DMA has finished transferring data to your destination buffer, false otherwise.
 #
 
-proc Y2RU_IsDoneReceiving*(is_done: ptr bool): Result
-proc Y2RU_SetUnknownParams*(params: array[16, u16]): Result
+proc Y2RU_IsDoneReceiving*(is_done: ptr bool): Result {.cdecl,
+    importc: "Y2RU_IsDoneReceiving", header: "y2r.h".}
+proc Y2RU_SetUnknownParams*(params: array[16, u16]): Result {.cdecl,
+    importc: "Y2RU_SetUnknownParams", header: "y2r.h".}
 #*
 #  @brief Sets all the parameters of Y2R_ConversionParams at once.
 #
 #  Faster than calling the individual value through Y2R_Set* because only one system call is made.
 #
 
-proc Y2RU_SetConversionParams*(params: ptr Y2R_ConversionParams): Result
+proc Y2RU_SetConversionParams*(params: ptr Y2R_ConversionParams): Result {.cdecl,
+    importc: "Y2RU_SetConversionParams", header: "y2r.h".}
 #*
 #  @brief Starts the conversion process
 #
 
-proc Y2RU_StartConversion*(): Result
+proc Y2RU_StartConversion*(): Result {.cdecl, importc: "Y2RU_StartConversion",
+                                    header: "y2r.h".}
 #*
 #  @brief Cancels the conversion
 #
 
-proc Y2RU_StopConversion*(): Result
+proc Y2RU_StopConversion*(): Result {.cdecl, importc: "Y2RU_StopConversion",
+                                   header: "y2r.h".}
 #*
 #  @brief Check if the conversion and DMA transfer are finished
 #
 #  This can have the same problems as the event and interrupt. See @ref Y2RU_SetTransferEndInterrupt.
 #
 
-proc Y2RU_IsBusyConversion*(is_busy: ptr bool): Result
+proc Y2RU_IsBusyConversion*(is_busy: ptr bool): Result {.cdecl,
+    importc: "Y2RU_IsBusyConversion", header: "y2r.h".}
 # Seems to check whether y2r is ready to be used
 
-proc Y2RU_PingProcess*(ping: ptr u8): Result
-proc Y2RU_DriverInitialize*(): Result
-proc Y2RU_DriverFinalize*(): Result
+proc Y2RU_PingProcess*(ping: ptr u8): Result {.cdecl, importc: "Y2RU_PingProcess",
+    header: "y2r.h".}
+proc Y2RU_DriverInitialize*(): Result {.cdecl, importc: "Y2RU_DriverInitialize",
+                                     header: "y2r.h".}
+proc Y2RU_DriverFinalize*(): Result {.cdecl, importc: "Y2RU_DriverFinalize",
+                                   header: "y2r.h".}

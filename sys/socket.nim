@@ -55,36 +55,51 @@ const
 type
   socklen_t* = uint32_t
   sa_family_t* = uint16_t
-  sockaddr* = object
-    sa_family*: sa_family_t
-    sa_data*: ptr char
+  sockaddr* {.importc: "sockaddr", header: "socket.h".} = object
+    sa_family* {.importc: "sa_family".}: sa_family_t
+    sa_data* {.importc: "sa_data".}: ptr char
 
-  sockaddr_storage* = object
-    ss_family*: sa_family_t
-    __ss_padding*: array[14, char]
+  sockaddr_storage* {.importc: "sockaddr_storage", header: "socket.h".} = object
+    ss_family* {.importc: "ss_family".}: sa_family_t
+    __ss_padding* {.importc: "__ss_padding".}: array[14, char]
 
-  linger* = object
-    l_onoff*: cint
-    l_linger*: cint
+  linger* {.importc: "linger", header: "socket.h".} = object
+    l_onoff* {.importc: "l_onoff".}: cint
+    l_linger* {.importc: "l_linger".}: cint
 
 
-proc accept*(sockfd: cint; `addr`: ptr sockaddr; addrlen: ptr socklen_t): cint
-proc `bind`*(sockfd: cint; `addr`: ptr sockaddr; addrlen: socklen_t): cint
-proc closesocket*(sockfd: cint): cint
-proc connect*(sockfd: cint; `addr`: ptr sockaddr; addrlen: socklen_t): cint
-proc getpeername*(sockfd: cint; `addr`: ptr sockaddr; addrlen: ptr socklen_t): cint
-proc getsockname*(sockfd: cint; `addr`: ptr sockaddr; addrlen: ptr socklen_t): cint
+proc accept*(sockfd: cint; `addr`: ptr sockaddr; addrlen: ptr socklen_t): cint {.cdecl,
+    importc: "accept", header: "socket.h".}
+proc `bind`*(sockfd: cint; `addr`: ptr sockaddr; addrlen: socklen_t): cint {.cdecl,
+    importc: "bind", header: "socket.h".}
+proc closesocket*(sockfd: cint): cint {.cdecl, importc: "closesocket",
+                                    header: "socket.h".}
+proc connect*(sockfd: cint; `addr`: ptr sockaddr; addrlen: socklen_t): cint {.cdecl,
+    importc: "connect", header: "socket.h".}
+proc getpeername*(sockfd: cint; `addr`: ptr sockaddr; addrlen: ptr socklen_t): cint {.
+    cdecl, importc: "getpeername", header: "socket.h".}
+proc getsockname*(sockfd: cint; `addr`: ptr sockaddr; addrlen: ptr socklen_t): cint {.
+    cdecl, importc: "getsockname", header: "socket.h".}
 proc getsockopt*(sockfd: cint; level: cint; optname: cint; optval: pointer;
-                optlen: ptr socklen_t): cint
-proc listen*(sockfd: cint; backlog: cint): cint
-proc recv*(sockfd: cint; buf: pointer; len: csize; flags: cint): ssize_t
+                optlen: ptr socklen_t): cint {.cdecl, importc: "getsockopt",
+    header: "socket.h".}
+proc listen*(sockfd: cint; backlog: cint): cint {.cdecl, importc: "listen",
+    header: "socket.h".}
+proc recv*(sockfd: cint; buf: pointer; len: csize; flags: cint): ssize_t {.cdecl,
+    importc: "recv", header: "socket.h".}
 proc recvfrom*(sockfd: cint; buf: pointer; len: csize; flags: cint;
-              src_addr: ptr sockaddr; addrlen: ptr socklen_t): ssize_t
-proc send*(sockfd: cint; buf: pointer; len: csize; flags: cint): ssize_t
+              src_addr: ptr sockaddr; addrlen: ptr socklen_t): ssize_t {.cdecl,
+    importc: "recvfrom", header: "socket.h".}
+proc send*(sockfd: cint; buf: pointer; len: csize; flags: cint): ssize_t {.cdecl,
+    importc: "send", header: "socket.h".}
 proc sendto*(sockfd: cint; buf: pointer; len: csize; flags: cint;
-            dest_addr: ptr sockaddr; addrlen: socklen_t): ssize_t
+            dest_addr: ptr sockaddr; addrlen: socklen_t): ssize_t {.cdecl,
+    importc: "sendto", header: "socket.h".}
 proc setsockopt*(sockfd: cint; level: cint; optname: cint; optval: pointer;
-                optlen: socklen_t): cint
-proc shutdown*(sockfd: cint; how: cint): cint
-proc socket*(domain: cint; `type`: cint; protocol: cint): cint
-proc sockatmark*(sockfd: cint): cint
+                optlen: socklen_t): cint {.cdecl, importc: "setsockopt",
+                                        header: "socket.h".}
+proc shutdown*(sockfd: cint; how: cint): cint {.cdecl, importc: "shutdown",
+    header: "socket.h".}
+proc socket*(domain: cint; `type`: cint; protocol: cint): cint {.cdecl,
+    importc: "socket", header: "socket.h".}
+proc sockatmark*(sockfd: cint): cint {.cdecl, importc: "sockatmark", header: "socket.h".}

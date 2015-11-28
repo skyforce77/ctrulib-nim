@@ -1,3 +1,4 @@
+# \file console.h
 #    \brief 3ds stdio support.
 #
 #<div class="fileHeader">
@@ -12,15 +13,15 @@
 #
 
 type
-  ConsolePrint* = proc (con: pointer; c: cint): bool
+  ConsolePrint* = proc (con: pointer; c: cint): bool {.cdecl.}
 
 #! a font struct for the console.
 
 type
-  ConsoleFont* = object
-    gfx*: ptr u8                #!< A pointer to the font graphics
-    asciiOffset*: u16          #!<  Offset to the first valid character in the font table
-    numChars*: u16             #!< Number of characters in the font graphics
+  ConsoleFont* {.importc: "ConsoleFont", header: "console.h".} = object
+    gfx* {.importc: "gfx".}: ptr u8 #!< A pointer to the font graphics
+    asciiOffset* {.importc: "asciiOffset".}: u16 #!<  Offset to the first valid character in the font table
+    numChars* {.importc: "numChars".}: u16 #!< Number of characters in the font graphics
 
 
 #* \brief console structure used to store the state of a console render context.
@@ -52,26 +53,26 @@ type
 #
 
 type
-  PrintConsole* = object
-    font*: ConsoleFont         #!< font of the console.
-    frameBuffer*: ptr u16       #!< framebuffer address.
-    cursorX*: cint             #!< Current X location of the cursor (as a tile offset by default)
-    cursorY*: cint             #!< Current Y location of the cursor (as a tile offset by default)
-    prevCursorX*: cint         #!< Internal state
-    prevCursorY*: cint         #!< Internal state
-    consoleWidth*: cint        #!< Width of the console hardware layer in characters
-    consoleHeight*: cint       #!< Height of the console hardware layer in characters
-    windowX*: cint             #!< Window X location in characters (not implemented)
-    windowY*: cint             #!< Window Y location in characters (not implemented)
-    windowWidth*: cint         #!< Window width in characters (not implemented)
-    windowHeight*: cint        #!< Window height in characters (not implemented)
-    tabSize*: cint             #!< Size of a tab
-    fg*: cint                  #!< foreground color
-    bg*: cint                  #!< background color
-    flags*: cint               #!< reverse/bright flags
-    PrintChar*: ConsolePrint #!< callback for printing a character. Should return true if it has handled rendering the graphics
-                           #         (else the print engine will attempt to render via tiles)
-    consoleInitialised*: bool  #!< True if the console is initialized
+  PrintConsole* {.importc: "PrintConsole", header: "console.h".} = object
+    font* {.importc: "font".}: ConsoleFont #!< font of the console.
+    frameBuffer* {.importc: "frameBuffer".}: ptr u16 #!< framebuffer address.
+    cursorX* {.importc: "cursorX".}: cint #!< Current X location of the cursor (as a tile offset by default)
+    cursorY* {.importc: "cursorY".}: cint #!< Current Y location of the cursor (as a tile offset by default)
+    prevCursorX* {.importc: "prevCursorX".}: cint #!< Internal state
+    prevCursorY* {.importc: "prevCursorY".}: cint #!< Internal state
+    consoleWidth* {.importc: "consoleWidth".}: cint #!< Width of the console hardware layer in characters
+    consoleHeight* {.importc: "consoleHeight".}: cint #!< Height of the console hardware layer in characters
+    windowX* {.importc: "windowX".}: cint #!< Window X location in characters (not implemented)
+    windowY* {.importc: "windowY".}: cint #!< Window Y location in characters (not implemented)
+    windowWidth* {.importc: "windowWidth".}: cint #!< Window width in characters (not implemented)
+    windowHeight* {.importc: "windowHeight".}: cint #!< Window height in characters (not implemented)
+    tabSize* {.importc: "tabSize".}: cint #!< Size of a tab
+    fg* {.importc: "fg".}: cint  #!< foreground color
+    bg* {.importc: "bg".}: cint  #!< background color
+    flags* {.importc: "flags".}: cint #!< reverse/bright flags
+    PrintChar* {.importc: "PrintChar".}: ConsolePrint #!< callback for printing a character. Should return true if it has handled rendering the graphics
+                                                  #         (else the print engine will attempt to render via tiles)
+    consoleInitialised* {.importc: "consoleInitialised".}: bool #!< True if the console is initialized
 
 
 const
@@ -88,7 +89,7 @@ const
 #! Console debug devices supported by libnds.
 
 type
-  debugDevice* = enum
+  debugDevice* {.size: sizeof(cint).} = enum
     debugDevice_NULL,         #!< swallows prints to stderr
     debugDevice_3DMOO,        #!< Directs stderr debug statements to 3dmoo
     debugDevice_CONSOLE       #!< Directs stderr debug statements to 3DS console window
@@ -99,7 +100,8 @@ type
 # \param font the font to load
 #
 
-proc consoleSetFont*(console: ptr PrintConsole; font: ptr ConsoleFont)
+proc consoleSetFont*(console: ptr PrintConsole; font: ptr ConsoleFont) {.cdecl,
+    importc: "consoleSetFont", header: "console.h".}
 #!	\brief Sets the print window
 # \param console console to set, if NULL it will set the current console window
 # \param x x location of the window
@@ -109,31 +111,36 @@ proc consoleSetFont*(console: ptr PrintConsole; font: ptr ConsoleFont)
 #
 
 proc consoleSetWindow*(console: ptr PrintConsole; x: cint; y: cint; width: cint;
-                      height: cint)
+                      height: cint) {.cdecl, importc: "consoleSetWindow",
+                                    header: "console.h".}
 #!	\brief Gets a pointer to the console with the default values
 # this should only be used when using a single console or without changing the console that is returned, other wise use consoleInit()
 # \return A pointer to the console with the default values
 #
 
-proc consoleGetDefault*(): ptr PrintConsole
+proc consoleGetDefault*(): ptr PrintConsole {.cdecl, importc: "consoleGetDefault",
+    header: "console.h".}
 #!	\brief Make the specified console the render target
 # \param console A pointer to the console struct (must have been initialized with consoleInit(PrintConsole* console)
 # \return a pointer to the previous console
 #
 
-proc consoleSelect*(console: ptr PrintConsole): ptr PrintConsole
+proc consoleSelect*(console: ptr PrintConsole): ptr PrintConsole {.cdecl,
+    importc: "consoleSelect", header: "console.h".}
 #!	\brief Initialise the console.
 # \param screen The screen to use for the console
 # \param console A pointer to the console data to initialze (if it's NULL, the default console will be used)
 # \return A pointer to the current console.
 #
 
-proc consoleInit*(screen: gfxScreen_t; console: ptr PrintConsole): ptr PrintConsole
+proc consoleInit*(screen: gfxScreen_t; console: ptr PrintConsole): ptr PrintConsole {.
+    cdecl, importc: "consoleInit", header: "console.h".}
 #!	\brief Initializes debug console output on stderr to the specified device
 # \param device The debug device (or devices) to output debug print statements to
 #
 
-proc consoleDebugInit*(device: debugDevice)
+proc consoleDebugInit*(device: debugDevice) {.cdecl, importc: "consoleDebugInit",
+    header: "console.h".}
 #! Clears the screan by using iprintf("\x1b[2J");
 
-proc consoleClear*()
+proc consoleClear*() {.cdecl, importc: "consoleClear", header: "console.h".}

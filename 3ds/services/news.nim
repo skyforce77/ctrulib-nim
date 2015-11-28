@@ -2,8 +2,8 @@
 # Requires access to "news:u" service.
 #
 
-proc newsInit*(): Result = 0
-proc newsExit*(): Result
+proc newsInit*(): Result {.cdecl, importc: "newsInit", header: "news.h".}
+proc newsExit*(): Result {.cdecl, importc: "newsExit", header: "news.h".}
 # NEWSU_AddNotification()
 #About: Adds a notification to the home menu Notifications applet.
 #
@@ -18,4 +18,5 @@ proc newsExit*(): Result
 
 proc NEWSU_AddNotification*(title: ptr u16; titleLength: u32; message: ptr u16;
                            messageLength: u32; imageData: pointer; imageSize: u32;
-                           jpeg: bool): Result
+                           jpeg: bool): Result {.cdecl,
+    importc: "NEWSU_AddNotification", header: "news.h".}

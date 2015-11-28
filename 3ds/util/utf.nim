@@ -7,7 +7,8 @@
 #   @returns -1 for error
 #
 
-proc decode_utf8*(`out`: ptr u32; `in`: ptr u8): int
+proc decode_utf8*(`out`: ptr uint32; `in`: ptr uint8): int {.cdecl,
+    importc: "decode_utf8", header: "utf.h".}
 #! Convert a UTF-16 sequence into a UTF-32 codepoint
 #
 #   @param[out] out Output codepoint
@@ -17,7 +18,8 @@ proc decode_utf8*(`out`: ptr u32; `in`: ptr u8): int
 #   @returns -1 for error
 #
 
-proc decode_utf16*(`out`: ptr u32; `in`: ptr u16): int
+proc decode_utf16*(`out`: ptr uint32; `in`: ptr uint16): int {.cdecl,
+    importc: "decode_utf16", header: "utf.h".}
 #! Convert a UTF-32 codepoint into a UTF-8 sequence
 #
 #   @param[out] out Output sequence
@@ -29,7 +31,8 @@ proc decode_utf16*(`out`: ptr u32; `in`: ptr u16): int
 #   @note \a out must be able to store 4 code units
 #
 
-proc encode_utf8*(`out`: ptr u8; `in`: u32): int
+proc encode_utf8*(`out`: ptr uint8; `in`: uint32): int {.cdecl,
+    importc: "encode_utf8", header: "utf.h".}
 #! Convert a UTF-32 codepoint into a UTF-16 sequence
 #
 #   @param[out] out Output sequence
@@ -41,7 +44,8 @@ proc encode_utf8*(`out`: ptr u8; `in`: u32): int
 #   @note \a out must be able to store 2 code units
 #
 
-proc encode_utf16*(`out`: ptr u16; `in`: u32): int
+proc encode_utf16*(`out`: ptr uint16; `in`: uint32): int {.cdecl,
+    importc: "encode_utf16", header: "utf.h".}
 #! Convert a UTF-8 sequence into a UTF-16 sequence
 #
 #   @param[out] out Output sequence
@@ -51,7 +55,8 @@ proc encode_utf16*(`out`: ptr u16; `in`: u32): int
 #   @returns -1 for error
 #
 
-proc utf8_to_utf16*(`out`: ptr u16; `in`: ptr u8; len: csize): csize
+proc utf8_to_utf16*(`out`: ptr uint16; `in`: ptr uint8; len: csize): csize {.cdecl,
+    importc: "utf8_to_utf16", header: "utf.h".}
 #! Convert a UTF-8 sequence into a UTF-32 sequence
 #
 #   @param[out] out Output sequence
@@ -61,7 +66,8 @@ proc utf8_to_utf16*(`out`: ptr u16; `in`: ptr u8; len: csize): csize
 #   @returns -1 for error
 #
 
-proc utf8_to_utf32*(`out`: ptr u32; `in`: ptr u8; len: csize): csize
+proc utf8_to_utf32*(`out`: ptr uint32; `in`: ptr uint8; len: csize): csize {.cdecl,
+    importc: "utf8_to_utf32", header: "utf.h".}
 #! Convert a UTF-16 sequence into a UTF-8 sequence
 #
 #   @param[out] out Output sequence
@@ -71,7 +77,8 @@ proc utf8_to_utf32*(`out`: ptr u32; `in`: ptr u8; len: csize): csize
 #   @returns -1 for error
 #
 
-proc utf16_to_utf8*(`out`: ptr u8; `in`: ptr u16; len: csize): csize
+proc utf16_to_utf8*(`out`: ptr uint8; `in`: ptr uint16; len: csize): csize {.cdecl,
+    importc: "utf16_to_utf8", header: "utf.h".}
 #! Convert a UTF-16 sequence into a UTF-32 sequence
 #
 #   @param[out] out Output sequence
@@ -81,7 +88,8 @@ proc utf16_to_utf8*(`out`: ptr u8; `in`: ptr u16; len: csize): csize
 #   @returns -1 for error
 #
 
-proc utf16_to_utf32*(`out`: ptr u32; `in`: ptr u16; len: csize): csize
+proc utf16_to_utf32*(`out`: ptr uint32; `in`: ptr uint16; len: csize): csize {.cdecl,
+    importc: "utf16_to_utf32", header: "utf.h".}
 #! Convert a UTF-32 sequence into a UTF-8 sequence
 #
 #   @param[out] out Output sequence
@@ -91,7 +99,8 @@ proc utf16_to_utf32*(`out`: ptr u32; `in`: ptr u16; len: csize): csize
 #   @returns -1 for error
 #
 
-proc utf32_to_utf8*(`out`: ptr u8; `in`: ptr u32; len: csize): csize
+proc utf32_to_utf8*(`out`: ptr uint8; `in`: ptr uint32; len: csize): csize {.cdecl,
+    importc: "utf32_to_utf8", header: "utf.h".}
 #! Convert a UTF-32 sequence into a UTF-16 sequence
 #
 #   @param[out] out Output sequence
@@ -101,4 +110,5 @@ proc utf32_to_utf8*(`out`: ptr u8; `in`: ptr u32; len: csize): csize
 #   @returns -1 for error
 #
 
-proc utf32_to_utf16*(`out`: ptr u16; `in`: ptr u32; len: csize): csize
+proc utf32_to_utf16*(`out`: ptr uint16; `in`: ptr uint32; len: csize): csize {.cdecl,
+    importc: "utf32_to_utf16", header: "utf.h".}

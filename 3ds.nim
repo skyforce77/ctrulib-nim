@@ -1,4 +1,3 @@
-include "3ds/types"
 include "3ds/svc"
 include "3ds/srv"
 include "3ds/linear"

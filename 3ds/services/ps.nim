@@ -1,7 +1,7 @@
 type
-  ps_aes_algo* = enum
+  ps_aes_algo* {.size: sizeof(cint).} = enum
     ps_CBC_ENC, ps_CBC_DEC, ps_CTR_ENC, ps_CTR_DEC, ps_CCM_ENC, ps_CCM_DEC
-  ps_aes_keytypes* = enum
+  ps_aes_keytypes* {.size: sizeof(cint).} = enum
     ps_KEYSLOT_0D, ps_KEYSLOT_2D, ps_KEYSLOT_31, ps_KEYSLOT_38, ps_KEYSLOT_32,
     ps_KEYSLOT_39_DLP, ps_KEYSLOT_2E, ps_KEYSLOT_INVALID, ps_KEYSLOT_36,
     ps_KEYSLOT_39_NFC
@@ -12,8 +12,8 @@ type
 # Requires access to "ps:ps" service
 #
 
-proc psInit*(): Result
-proc psExit*(): Result
+proc psInit*(): Result {.cdecl, importc: "psInit", header: "ps.h".}
+proc psExit*(): Result {.cdecl, importc: "psExit", header: "ps.h".}
 # PS_EncryptDecryptAes()
 #About: Is an interface for the AES Engine, you can only use predetermined keyslots though.
 #Note: Does not support AES CCM, see PS_EncryptSignDecryptVerifyAesCcm()
@@ -27,7 +27,8 @@ proc psExit*(): Result
 #
 
 proc PS_EncryptDecryptAes*(size: u32; `in`: ptr u8; `out`: ptr u8; aes_algo: u32;
-                          key_type: u32; iv: ptr u8): Result
+                          key_type: u32; iv: ptr u8): Result {.cdecl,
+    importc: "PS_EncryptDecryptAes", header: "ps.h".}
 # PS_EncryptSignDecryptVerifyAesCcm()
 #About: Is an interface for the AES Engine (CCM Encrypt/Decrypt only), you can only use predetermined keyslots though.
 #Note: When encrypting, the output buffer size must include the MAC size, when decrypting, the input buffer size must include MAC size.
@@ -48,18 +49,21 @@ proc PS_EncryptDecryptAes*(size: u32; `in`: ptr u8; `out`: ptr u8; aes_algo: u32
 proc PS_EncryptSignDecryptVerifyAesCcm*(`in`: ptr u8; in_size: u32; `out`: ptr u8;
                                        out_size: u32; data_len: u32;
                                        mac_data_len: u32; mac_len: u32;
-                                       aes_algo: u32; key_type: u32; nonce: ptr u8): Result
+                                       aes_algo: u32; key_type: u32; nonce: ptr u8): Result {.
+    cdecl, importc: "PS_EncryptSignDecryptVerifyAesCcm", header: "ps.h".}
 # PS_GetLocalFriendCodeSeed()
 #About: Gets a 64bit console id, it's used for some key slot inits
 #
 #  seed			ptr to where the seed is written to
 #
 
-proc PS_GetLocalFriendCodeSeed*(seed: ptr u64): Result
+proc PS_GetLocalFriendCodeSeed*(seed: ptr u64): Result {.cdecl,
+    importc: "PS_GetLocalFriendCodeSeed", header: "ps.h".}
 # PS_GetDeviceId()
 #About: Gets a 32bit device id, it's used for some key slot inits
 #
 #  device_id		ptr to where the device id is written to
 #
 
-proc PS_GetDeviceId*(device_id: ptr u32): Result
+proc PS_GetDeviceId*(device_id: ptr u32): Result {.cdecl, importc: "PS_GetDeviceId",
+    header: "ps.h".}

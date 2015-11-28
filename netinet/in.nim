@@ -23,20 +23,20 @@ const
 type
   in_port_t* = uint16_t
   in_addr_t* = uint32_t
-  in_addr* = object
-    s_addr*: in_addr_t
+  in_addr* {.importc: "in_addr", header: "in.h".} = object
+    s_addr* {.importc: "s_addr".}: in_addr_t
 
-  sockaddr_in* = object
-    sin_family*: sa_family_t
-    sin_port*: in_port_t
-    sin_addr*: in_addr
-    sin_zero*: array[8, cuchar]
+  sockaddr_in* {.importc: "sockaddr_in", header: "in.h".} = object
+    sin_family* {.importc: "sin_family".}: sa_family_t
+    sin_port* {.importc: "sin_port".}: in_port_t
+    sin_addr* {.importc: "sin_addr".}: in_addr
+    sin_zero* {.importc: "sin_zero".}: array[8, cuchar]
 
 
 # Request struct for multicast socket ops 
 
 type
-  ip_mreq* = object
-    imr_multiaddr*: in_addr    # IP multicast address of group 
-    imr_interface*: in_addr    # local IP address of interface 
+  ip_mreq* {.importc: "ip_mreq", header: "in.h".} = object
+    imr_multiaddr* {.importc: "imr_multiaddr".}: in_addr # IP multicast address of group 
+    imr_interface* {.importc: "imr_interface".}: in_addr # local IP address of interface 
   

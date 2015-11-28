@@ -1,2 +1,2 @@
-proc sdmcInit*(): Result
-proc sdmcExit*(): Result
+proc sdmcInit*(): Result {.cdecl, importc: "sdmcInit", header: "sdmc.h".}
+proc sdmcExit*(): Result {.cdecl, importc: "sdmcExit", header: "sdmc.h".}

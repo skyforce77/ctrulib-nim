@@ -1,12 +1,5 @@
-#
-#  types.h _ Various system types.
-#
-
-const
-  U64_MAX* = 0xFFFFFFFFFFFFFFFF
-
 type
-  mediatypes_enum* = enum
+  mediatypes_enum* {.size: sizeof(cint).} = enum
     mediatype_NAND, mediatype_SDMC, mediatype_GAMECARD
   u8* = uint8
   u16* = uint16
@@ -26,8 +19,7 @@ type
   vs64* = s64
   Handle* = u32
   Result* = s32
-  ThreadFunc* = proc (a2: pointer)
-
+  ThreadFunc* = proc (a2: pointer) {.cdecl.}
 
 template BIT*(n: expr): expr =
-  (1 shl (n))
+  (1 shl n)

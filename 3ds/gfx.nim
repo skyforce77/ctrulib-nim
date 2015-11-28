@@ -17,7 +17,7 @@ template RGB8_to_565*(r, g, b: expr): expr =
       ((((r) shr 3) and 0x0000001F) shl 11)
 
 type
-  gfxScreen_t* = enum
+  gfxScreen_t* {.size: sizeof(cint).} = enum
     GFX_TOP = 0, GFX_BOTTOM = 1
 
 
@@ -29,7 +29,7 @@ type
 #
 
 type
-  gfx3dSide_t* = enum
+  gfx3dSide_t* {.size: sizeof(cint).} = enum
     GFX_LEFT = 0,               #/< Left eye framebuffer
     GFX_RIGHT = 1               #/< Right eye framebuffer
                # GFX_BOTTOM = 0
@@ -46,7 +46,7 @@ type
 #  @note You should always call @ref gfxExit once done to free the memory and services
 #
 
-proc gfxInitDefault*()
+proc gfxInitDefault*() {.cdecl, importc: "gfxInitDefault", header: "gfx.h".}
 #*
 #  @brief Initializes the LCD framebuffers
 #  @brief topFormat The format of the top screen framebuffers
@@ -62,14 +62,15 @@ proc gfxInitDefault*()
 #
 
 proc gfxInit*(topFormat: GSP_FramebufferFormats;
-             bottomFormat: GSP_FramebufferFormats; vrambuffers: bool)
+             bottomFormat: GSP_FramebufferFormats; vrambuffers: bool) {.cdecl,
+    importc: "gfxInit", header: "gfx.h".}
 #*
 #  @brief Closes the gsp service and frees the framebuffers.
 #
 #  Just call it when you're done.
 #
 
-proc gfxExit*()
+proc gfxExit*() {.cdecl, importc: "gfxExit", header: "gfx.h".}
 #/@}
 #/@name Control
 #/@{
@@ -78,20 +79,22 @@ proc gfxExit*()
 #  @param enable Enables the 3D effect if true, disables it if false.
 #
 
-proc gfxSet3D*(enable: bool)
+proc gfxSet3D*(enable: bool) {.cdecl, importc: "gfxSet3D", header: "gfx.h".}
 #*
 #  @brief Changes the color format of a screen
 #  @param screen The screen of which format should be changed
 #  @param format One of the gsp pixel formats.
 #
 
-proc gfxSetScreenFormat*(screen: gfxScreen_t; format: GSP_FramebufferFormats)
+proc gfxSetScreenFormat*(screen: gfxScreen_t; format: GSP_FramebufferFormats) {.
+    cdecl, importc: "gfxSetScreenFormat", header: "gfx.h".}
 #*
 #  @brief Gets a screen pixel format.
 #  @return the pixel format of the chosen screen set by ctrulib.
 #
 
-proc gfxGetScreenFormat*(screen: gfxScreen_t): GSP_FramebufferFormats
+proc gfxGetScreenFormat*(screen: gfxScreen_t): GSP_FramebufferFormats {.cdecl,
+    importc: "gfxGetScreenFormat", header: "gfx.h".}
 #*
 #  @brief Enables the ctrulib double buffering
 #
@@ -103,7 +106,8 @@ proc gfxGetScreenFormat*(screen: gfxScreen_t): GSP_FramebufferFormats
 #  for both screens if you want to keep the gsp configuration up to date.
 #
 
-proc gfxSetDoubleBuffering*(screen: gfxScreen_t; doubleBuffering: bool)
+proc gfxSetDoubleBuffering*(screen: gfxScreen_t; doubleBuffering: bool) {.cdecl,
+    importc: "gfxSetDoubleBuffering", header: "gfx.h".}
 #*
 #  @brief Flushes the current framebuffers
 #
@@ -111,7 +115,7 @@ proc gfxSetDoubleBuffering*(screen: gfxScreen_t; doubleBuffering: bool)
 #  This shouldn't be needed and has a significant overhead.
 #
 
-proc gfxFlushBuffers*()
+proc gfxFlushBuffers*() {.cdecl, importc: "gfxFlushBuffers", header: "gfx.h".}
 #*
 #  @brief Swaps the buffers and sets the gsp state
 #
@@ -120,7 +124,7 @@ proc gfxFlushBuffers*()
 #  When using the GPU, call @ref gfxSwapBuffers instead.
 #
 
-proc gfxSwapBuffers*()
+proc gfxSwapBuffers*() {.cdecl, importc: "gfxSwapBuffers", header: "gfx.h".}
 #*
 #  @brief Swaps the framebuffers
 #
@@ -128,7 +132,7 @@ proc gfxSwapBuffers*()
 #  so the gsp state mustn't be set directly by the user.
 #
 
-proc gfxSwapBuffersGpu*()
+proc gfxSwapBuffersGpu*() {.cdecl, importc: "gfxSwapBuffersGpu", header: "gfx.h".}
 #/@}
 #/@name Helper
 #/@{
@@ -142,14 +146,18 @@ proc gfxSwapBuffersGpu*()
 #
 
 proc gfxGetFramebuffer*(screen: gfxScreen_t; side: gfx3dSide_t; width: ptr u16;
-                       height: ptr u16): ptr u8
+                       height: ptr u16): ptr u8 {.cdecl, importc: "gfxGetFramebuffer",
+    header: "gfx.h".}
 #/@}
 #global variables
 
-var gfxTopLeftFramebuffers*: array[2, ptr u8]
+var gfxTopLeftFramebuffers* {.importc: "gfxTopLeftFramebuffers", header: "gfx.h".}: array[
+    2, ptr u8]
 
-var gfxTopRightFramebuffers*: array[2, ptr u8]
+var gfxTopRightFramebuffers* {.importc: "gfxTopRightFramebuffers", header: "gfx.h".}: array[
+    2, ptr u8]
 
-var gfxBottomFramebuffers*: array[2, ptr u8]
+var gfxBottomFramebuffers* {.importc: "gfxBottomFramebuffers", header: "gfx.h".}: array[
+    2, ptr u8]
 
-var gxCmdBuf*: ptr u32
+var gxCmdBuf* {.importc: "gxCmdBuf", header: "gfx.h".}: ptr u32

@@ -19,13 +19,13 @@ template GET_VERSION_REVISION*(version: expr): expr =
 #! OS_VersionBin. Format of the system version: "<major>.<minor>.<build>-<nupver><region>" 
 
 type
-  OS_VersionBin* = object
-    build*: u8
-    minor*: u8
-    mainver*: u8               #"major" in CVER, NUP version in NVer.
-    reserved_x3*: u8
-    region*: char              #"ASCII character for the system version region"
-    reserved_x5*: array[0x00000003, u8]
+  OS_VersionBin* {.importc: "OS_VersionBin", header: "os.h".} = object
+    build* {.importc: "build".}: u8
+    minor* {.importc: "minor".}: u8
+    mainver* {.importc: "mainver".}: u8 #"major" in CVER, NUP version in NVer.
+    reserved_x3* {.importc: "reserved_x3".}: u8
+    region* {.importc: "region".}: char #"ASCII character for the system version region"
+    reserved_x5* {.importc: "reserved_x5".}: array[0x00000003, u8]
 
 
 #*
@@ -33,14 +33,16 @@ type
 #  It is sometimes required by services or when using the GPU command buffer.
 # 
 
-proc osConvertVirtToPhys*(vaddr: u32): u32
+proc osConvertVirtToPhys*(vaddr: u32): u32 {.cdecl, importc: "osConvertVirtToPhys",
+    header: "os.h".}
 #*
 #  Converts 0x14* vmem to 0x30*.
 #  @return The input address when it's already within the new vmem.
 #  @return 0 when outside of either LINEAR mem areas.
 # 
 
-proc osConvertOldLINEARMemToNew*(`addr`: u32): u32
+proc osConvertOldLINEARMemToNew*(`addr`: u32): u32 {.cdecl,
+    importc: "osConvertOldLINEARMemToNew", header: "os.h".}
 #*
 #  @brief Basic information about a service error.
 #  @return A string of the summary of an error.
@@ -48,14 +50,14 @@ proc osConvertOldLINEARMemToNew*(`addr`: u32): u32
 #  This can be used to get some details about an error returned by a service call.
 # 
 
-proc osStrError*(error: u32): cstring
+proc osStrError*(error: u32): cstring {.cdecl, importc: "osStrError", header: "os.h".}
 #*
 #  @return the Firm version
 # 
 #  This can be used to compare system versions easily with @ref SYSTEM_VERSION.
 # 
 
-proc osGetFirmVersion*(): u32
+proc osGetFirmVersion*(): u32 {.cdecl, importc: "osGetFirmVersion", header: "os.h".}
 #*
 #  @return the kernel version
 # 
@@ -66,12 +68,12 @@ proc osGetFirmVersion*(): u32
 #  @endcode
 # 
 
-proc osGetKernelVersion*(): u32
+proc osGetKernelVersion*(): u32 {.cdecl, importc: "osGetKernelVersion", header: "os.h".}
 #*
 #  @return number of milliseconds since 1st Jan 1900 00:00.
 # 
 
-proc osGetTime*(): u64
+proc osGetTime*(): u64 {.cdecl, importc: "osGetTime", header: "os.h".}
 #*
 #  @brief Returns the Wifi signal strength.
 # 
@@ -89,13 +91,14 @@ proc osGetTime*(): u64
 #  @return the Wifi signal strength
 # 
 
-proc osGetWifiStrength*(): u8
+proc osGetWifiStrength*(): u8 {.cdecl, importc: "osGetWifiStrength", header: "os.h".}
 #*
 #  @brief Configures the New 3DS speedup.
 #  @param enable Specifies whether to enable or disable the speedup.
 # 
 
-proc osSetSpeedupEnable*(enable: bool)
+proc osSetSpeedupEnable*(enable: bool) {.cdecl, importc: "osSetSpeedupEnable",
+                                      header: "os.h".}
 #*
 #  @brief Gets the NAND system-version stored in NVer/CVer.
 #  The romfs device must not be already initialized(via romfsInit*()) at the time this function is called, since this code uses the romfs device.
@@ -105,7 +108,8 @@ proc osSetSpeedupEnable*(enable: bool)
 # 
 
 proc osGetSystemVersionData*(nver_versionbin: ptr OS_VersionBin;
-                            cver_versionbin: ptr OS_VersionBin): Result
+                            cver_versionbin: ptr OS_VersionBin): Result {.cdecl,
+    importc: "osGetSystemVersionData", header: "os.h".}
 #*
 #  @brief This is a wrapper for osGetSystemVersionData.
 #  @param nver_versionbin Optional output OS_VersionBin structure for the data read from NVer, can be NULL.
@@ -117,4 +121,5 @@ proc osGetSystemVersionData*(nver_versionbin: ptr OS_VersionBin;
 
 proc osGetSystemVersionDataString*(nver_versionbin: ptr OS_VersionBin;
                                   cver_versionbin: ptr OS_VersionBin;
-                                  sysverstr: cstring; sysverstr_maxsize: u32): Result
+                                  sysverstr: cstring; sysverstr_maxsize: u32): Result {.
+    cdecl, importc: "osGetSystemVersionDataString", header: "os.h".}

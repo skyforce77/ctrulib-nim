@@ -3,6 +3,8 @@
 #  @brief Syscall wrappers.
 #
 
+import "3ds/types"
+
 #/@name Memory management
 #/@{
 #*
@@ -12,7 +14,7 @@
 #
 
 type
-  MemOp* = enum
+  MemOp* {.size: sizeof(cint).} = enum
     MEMOP_FREE = 1,             #/< Memory un-mapping
     MEMOP_RESERVE = 2,          #/< Reserve memory
     MEMOP_ALLOC = 3,            #/< Memory mapping
@@ -23,7 +25,7 @@ type
     MEMOP_REGION_SYSTEM = 0x00000200, MEMOP_REGION_BASE = 0x00000300,
     MEMOP_REGION_MASK = 0x00000F00, MEMOP_LINEAR_FLAG = 0x00010000, #/< Flag for linear memory operations
     MEMOP_ALLOC_LINEAR = 0x00010000 or 3
-  MemState* = enum
+  MemState* {.size: sizeof(cint).} = enum
     MEMSTATE_FREE = 0, MEMSTATE_RESERVED = 1, MEMSTATE_IO = 2, MEMSTATE_STATIC = 3,
     MEMSTATE_CODE = 4, MEMSTATE_PRIVATE = 5, MEMSTATE_SHARED = 6,
     MEMSTATE_CONTINUOUS = 7, MEMSTATE_ALIASED = 8, MEMSTATE_ALIAS = 9,
@@ -36,19 +38,19 @@ type
 #
 
 type
-  MemPerm* = enum
+  MemPerm* {.size: sizeof(cint).} = enum
     MEMPERM_READ = 1, MEMPERM_WRITE = 2, MEMPERM_EXECUTE = 4,
     MEMPERM_DONTCARE = 0x10000000
-  MemInfo* = object
-    base_addr*: u32
-    size*: u32
-    perm*: u32                 #/< See @ref MemPerm
-    state*: u32                #/< See @ref MemState
+  MemInfo* {.importc: "MemInfo", header: "svc.h".} = object
+    base_addr* {.importc: "base_addr".}: u32
+    size* {.importc: "size".}: u32
+    perm* {.importc: "perm".}: u32 #/< See @ref MemPerm
+    state* {.importc: "state".}: u32 #/< See @ref MemState
 
-  PageInfo* = object
-    flags*: u32
+  PageInfo* {.importc: "PageInfo", header: "svc.h".} = object
+    flags* {.importc: "flags".}: u32
 
-  ArbitrationType* = enum
+  ArbitrationType* {.size: sizeof(cint).} = enum
     ARBITRATION_SIGNAL = 0,     #/< Signal #value threads for wake-up.
     ARBITRATION_WAIT_IF_LESS_THAN = 1, #/< If the memory at the address is strictly lower than #value, then wait for signal.
     ARBITRATION_DECREMENT_AND_WAIT_IF_LESS_THAN = 2, #/< If the memory at the address is strictly lower than #value, then decrement it and wait for signal.
@@ -67,7 +69,7 @@ const
 #/@{
 
 type
-  ThreadInfoType* = enum
+  ThreadInfoType* {.size: sizeof(cint).} = enum
     THREADINFO_TYPE_UNKNOWN
 
 
@@ -76,46 +78,47 @@ type
 #/@{
 
 type
-  INNER_C_UNION_9879052047195322384* = object {.union.}
-    process*: ProcessEvent
-    create_thread*: CreateThreadEvent
-    exit_thread*: ExitThreadEvent
-    exit_process*: ExitProcessEvent
-    exception*: ExceptionEvent # TODO: DLL_LOAD
-                             # TODO: DLL_UNLOAD
-    scheduler*: SchedulerInOutEvent
-    syscall*: SyscallInOutEvent
-    output_string*: OutputStringEvent
-    map*: MapEvent
+  INNER_C_UNION_9879052047195322384* {.importc: "no_name", header: "svc.h".} = object {.
+      union.}
+    process* {.importc: "process".}: ProcessEvent
+    create_thread* {.importc: "create_thread".}: CreateThreadEvent
+    exit_thread* {.importc: "exit_thread".}: ExitThreadEvent
+    exit_process* {.importc: "exit_process".}: ExitProcessEvent
+    exception* {.importc: "exception".}: ExceptionEvent # TODO: DLL_LOAD
+                                                    # TODO: DLL_UNLOAD
+    scheduler* {.importc: "scheduler".}: SchedulerInOutEvent
+    syscall* {.importc: "syscall".}: SyscallInOutEvent
+    output_string* {.importc: "output_string".}: OutputStringEvent
+    map* {.importc: "map".}: MapEvent
 
-  ProcessEventReason* = enum
+  ProcessEventReason* {.size: sizeof(cint).} = enum
     REASON_CREATE = 1, REASON_ATTACH = 2
-  ProcessEvent* = object
-    program_id*: u64
-    process_name*: array[8, u8]
-    process_id*: u32
-    reason*: u32               #/< See @ref ProcessEventReason
+  ProcessEvent* {.importc: "ProcessEvent", header: "svc.h".} = object
+    program_id* {.importc: "program_id".}: u64
+    process_name* {.importc: "process_name".}: array[8, u8]
+    process_id* {.importc: "process_id".}: u32
+    reason* {.importc: "reason".}: u32 #/< See @ref ProcessEventReason
 
-  ExitProcessEventReason* = enum
+  ExitProcessEventReason* {.size: sizeof(cint).} = enum
     EXITPROCESS_EVENT_NONE = 0, EXITPROCESS_EVENT_TERMINATE = 1,
     EXITPROCESS_EVENT_UNHANDLED_EXCEPTION = 2
-  ExitProcessEvent* = object
-    reason*: u32               #/< See @ref ExitProcessEventReason
+  ExitProcessEvent* {.importc: "ExitProcessEvent", header: "svc.h".} = object
+    reason* {.importc: "reason".}: u32 #/< See @ref ExitProcessEventReason
 
-  CreateThreadEvent* = object
-    creator_thread_id*: u32
-    base_addr*: u32
-    entry_point*: u32
+  CreateThreadEvent* {.importc: "CreateThreadEvent", header: "svc.h".} = object
+    creator_thread_id* {.importc: "creator_thread_id".}: u32
+    base_addr* {.importc: "base_addr".}: u32
+    entry_point* {.importc: "entry_point".}: u32
 
-  ExitThreadEventReason* = enum
+  ExitThreadEventReason* {.size: sizeof(cint).} = enum
     EXITTHREAD_EVENT_NONE = 0, EXITTHREAD_EVENT_TERMINATE = 1,
     EXITTHREAD_EVENT_UNHANDLED_EXC = 2, EXITTHREAD_EVENT_TERMINATE_PROCESS = 3
-  ExitThreadEvent* = object
-    reason*: u32               #/< See @ref ExitThreadEventReason
+  ExitThreadEvent* {.importc: "ExitThreadEvent", header: "svc.h".} = object
+    reason* {.importc: "reason".}: u32 #/< See @ref ExitThreadEventReason
 
-  UserBreakType* = enum
+  UserBreakType* {.size: sizeof(cint).} = enum
     USERBREAK_PANIC = 0, USERBREAK_ASSERT = 1, USERBREAK_USER = 2
-  ExceptionEventType* = enum
+  ExceptionEventType* {.size: sizeof(cint).} = enum
     EXC_EVENT_UNDEFINED_INSTRUCTION = 0, #/< arg: (None)
     EXC_EVENT_UNKNOWN1 = 1,     #/< arg: (None)
     EXC_EVENT_UNKNOWN2 = 2,     #/< arg: address
@@ -125,39 +128,39 @@ type
     EXC_EVENT_USER_BREAK = 6,   #/< arg: @ref UserBreakType
     EXC_EVENT_DEBUGGER_BREAK = 7, #/< arg: (None)
     EXC_EVENT_UNDEFINED_SYSCALL = 8
-  ExceptionEvent* = object
-    `type`*: u32               #/< See @ref ExceptionEventType
-    address*: u32
-    argument*: u32             #/< See @ref ExceptionEventType
+  ExceptionEvent* {.importc: "ExceptionEvent", header: "svc.h".} = object
+    `type`* {.importc: "type".}: u32 #/< See @ref ExceptionEventType
+    address* {.importc: "address".}: u32
+    argument* {.importc: "argument".}: u32 #/< See @ref ExceptionEventType
 
-  SchedulerInOutEvent* = object
-    clock_tick*: u64
+  SchedulerInOutEvent* {.importc: "SchedulerInOutEvent", header: "svc.h".} = object
+    clock_tick* {.importc: "clock_tick".}: u64
 
-  SyscallInOutEvent* = object
-    clock_tick*: u64
-    syscall*: u32
+  SyscallInOutEvent* {.importc: "SyscallInOutEvent", header: "svc.h".} = object
+    clock_tick* {.importc: "clock_tick".}: u64
+    syscall* {.importc: "syscall".}: u32
 
-  OutputStringEvent* = object
-    string_addr*: u32
-    string_size*: u32
+  OutputStringEvent* {.importc: "OutputStringEvent", header: "svc.h".} = object
+    string_addr* {.importc: "string_addr".}: u32
+    string_size* {.importc: "string_size".}: u32
 
-  MapEvent* = object
-    mapped_addr*: u32
-    mapped_size*: u32
-    memperm*: u32
-    memstate*: u32
+  MapEvent* {.importc: "MapEvent", header: "svc.h".} = object
+    mapped_addr* {.importc: "mapped_addr".}: u32
+    mapped_size* {.importc: "mapped_size".}: u32
+    memperm* {.importc: "memperm".}: u32
+    memstate* {.importc: "memstate".}: u32
 
-  DebugEventType* = enum
+  DebugEventType* {.size: sizeof(cint).} = enum
     DBG_EVENT_PROCESS = 0, DBG_EVENT_CREATE_THREAD = 1, DBG_EVENT_EXIT_THREAD = 2,
     DBG_EVENT_EXIT_PROCESS = 3, DBG_EVENT_EXCEPTION = 4, DBG_EVENT_DLL_LOAD = 5,
     DBG_EVENT_DLL_UNLOAD = 6, DBG_EVENT_SCHEDULE_IN = 7, DBG_EVENT_SCHEDULE_OUT = 8,
     DBG_EVENT_SYSCALL_IN = 9, DBG_EVENT_SYSCALL_OUT = 10,
     DBG_EVENT_OUTPUT_STRING = 11, DBG_EVENT_MAP = 12
-  DebugEventInfo* = object
-    `type`*: u32               #/< See @ref DebugEventType
-    thread_id*: u32
-    unknown*: array[2, u32]
-    ano_5195434559754685796*: INNER_C_UNION_9879052047195322384
+  DebugEventInfo* {.importc: "DebugEventInfo", header: "svc.h".} = object
+    `type`* {.importc: "type".}: u32 #/< See @ref DebugEventType
+    thread_id* {.importc: "thread_id".}: u32
+    unknown* {.importc: "unknown".}: array[2, u32]
+    ano_5195434559754685796* {.importc: "ano_5195434559754685796".}: INNER_C_UNION_9879052047195322384
 
 
 
@@ -167,21 +170,22 @@ type
 
 
 #/@}
+#
 #static inline void* getThreadLocalStorage(void)
 #{
 # void* ret;
 # __asm__ ("mrc p15, 0, %[data], c13, c0, 3" : [data] "=r" (ret));
 # return ret;
 #}
-
-#TODO
-#proc getThreadLocalStorage*(): ptr u32 {.inline.} =
-#  var ret: pointer
-#  asm """mrc p15, 0, %[data], c13, c0, 3" : [data] "=r" (ret)"""
-#  return cast[ptr u32](u32(getThreadLocalStorage()) + u32(0x00000080))
 #
-#proc getThreadCommandBuffer*(): ptr u32 {.inline.} =
-#  return cast[ptr u32](u32(getThreadLocalStorage()) + u32(0x00000080))
+
+proc getThreadLocalStorage*(): ptr u32 {.inline.} =
+  var ret: pointer
+  asm """mrc p15, 0, %[data], c13, c0, 3" : [data] "=r" (ret)"""
+  return cast[ptr u32](cast[u32](getThreadLocalStorage()) + u32(0x00000080))
+
+proc getThreadCommandBuffer*(): ptr u32 {.inline, cdecl.} =
+  return cast[ptr u32](cast[u8](getThreadLocalStorage()) + 0x00000080)
 
 #/@name Memory management
 #/@{
@@ -206,7 +210,8 @@ type
 #
 
 proc svcControlMemory*(addr_out: ptr u32; addr0: u32; addr1: u32; size: u32; op: MemOp;
-                      perm: MemPerm): Result
+                      perm: MemPerm): Result {.cdecl, importc: "svcControlMemory",
+    header: "svc.h".}
 #*
 #  @brief Controls the memory mapping of a process
 #  @param addr0 The virtual address to map
@@ -221,7 +226,8 @@ proc svcControlMemory*(addr_out: ptr u32; addr0: u32; addr1: u32; size: u32; op:
 #
 
 proc svcControlProcessMemory*(process: Handle; addr0: u32; addr1: u32; size: u32;
-                             `type`: u32; perm: u32): Result
+                             `type`: u32; perm: u32): Result {.cdecl,
+    importc: "svcControlProcessMemory", header: "svc.h".}
 #*
 #  @brief Creates a block of shared memory
 #  @param memblock Pointer to store the handle of the block
@@ -234,29 +240,42 @@ proc svcControlProcessMemory*(process: Handle; addr0: u32; addr1: u32; size: u32
 #
 
 proc svcCreateMemoryBlock*(memblock: ptr Handle; `addr`: u32; size: u32;
-                          my_perm: MemPerm; other_perm: MemPerm): Result
+                          my_perm: MemPerm; other_perm: MemPerm): Result {.cdecl,
+    importc: "svcCreateMemoryBlock", header: "svc.h".}
 proc svcMapMemoryBlock*(memblock: Handle; `addr`: u32; my_perm: MemPerm;
-                       other_perm: MemPerm): Result
-proc svcMapProcessMemory*(process: Handle; startAddr: u32; endAddr: u32): Result
-proc svcUnmapProcessMemory*(process: Handle; startAddr: u32; endAddr: u32): Result
-proc svcUnmapMemoryBlock*(memblock: Handle; `addr`: u32): Result
+                       other_perm: MemPerm): Result {.cdecl,
+    importc: "svcMapMemoryBlock", header: "svc.h".}
+proc svcMapProcessMemory*(process: Handle; startAddr: u32; endAddr: u32): Result {.
+    cdecl, importc: "svcMapProcessMemory", header: "svc.h".}
+proc svcUnmapProcessMemory*(process: Handle; startAddr: u32; endAddr: u32): Result {.
+    cdecl, importc: "svcUnmapProcessMemory", header: "svc.h".}
+proc svcUnmapMemoryBlock*(memblock: Handle; `addr`: u32): Result {.cdecl,
+    importc: "svcUnmapMemoryBlock", header: "svc.h".}
 proc svcStartInterProcessDma*(dma: ptr Handle; dstProcess: Handle; dst: pointer;
                              srcProcess: Handle; src: pointer; size: u32;
-                             dmaConfig: pointer): Result
-proc svcStopDma*(dma: Handle): Result
-proc svcGetDmaState*(dmaState: pointer; dma: Handle): Result
+                             dmaConfig: pointer): Result {.cdecl,
+    importc: "svcStartInterProcessDma", header: "svc.h".}
+proc svcStopDma*(dma: Handle): Result {.cdecl, importc: "svcStopDma", header: "svc.h".}
+proc svcGetDmaState*(dmaState: pointer; dma: Handle): Result {.cdecl,
+    importc: "svcGetDmaState", header: "svc.h".}
 #*
 #  @brief Memory information query
 #  @param addr Virtual memory address
 #
 
-proc svcQueryMemory*(info: ptr MemInfo; `out`: ptr PageInfo; `addr`: u32): Result
+proc svcQueryMemory*(info: ptr MemInfo; `out`: ptr PageInfo; `addr`: u32): Result {.cdecl,
+    importc: "svcQueryMemory", header: "svc.h".}
 proc svcQueryProcessMemory*(info: ptr MemInfo; `out`: ptr PageInfo; process: Handle;
-                           `addr`: u32): Result
-proc svcInvalidateProcessDataCache*(process: Handle; `addr`: pointer; size: u32): Result = 0
-proc svcFlushProcessDataCache*(process: Handle; `addr`: pointer; size: u32): Result = 0
-proc svcReadProcessMemory*(buffer: pointer; debug: Handle; `addr`: u32; size: u32): Result
-proc svcWriteProcessMemory*(debug: Handle; buffer: pointer; `addr`: u32; size: u32): Result
+                           `addr`: u32): Result {.cdecl,
+    importc: "svcQueryProcessMemory", header: "svc.h".}
+proc svcInvalidateProcessDataCache*(process: Handle; `addr`: pointer; size: u32): Result {.
+    cdecl, importc: "svcInvalidateProcessDataCache", header: "svc.h".}
+proc svcFlushProcessDataCache*(process: Handle; `addr`: pointer; size: u32): Result {.
+    cdecl, importc: "svcFlushProcessDataCache", header: "svc.h".}
+proc svcReadProcessMemory*(buffer: pointer; debug: Handle; `addr`: u32; size: u32): Result {.
+    cdecl, importc: "svcReadProcessMemory", header: "svc.h".}
+proc svcWriteProcessMemory*(debug: Handle; buffer: pointer; `addr`: u32; size: u32): Result {.
+    cdecl, importc: "svcWriteProcessMemory", header: "svc.h".}
 #/@}
 #/@name Process management
 #/@{
@@ -266,16 +285,23 @@ proc svcWriteProcessMemory*(debug: Handle; buffer: pointer; `addr`: u32; size: u
 #  @param      processId The ID of the process to open
 #
 
-proc svcOpenProcess*(process: ptr Handle; processId: u32): Result
-proc svcExitProcess*()
-proc svcTerminateProcess*(process: Handle): Result
-proc svcGetProcessInfo*(`out`: ptr s64; process: Handle; `type`: u32): Result = 0
-proc svcGetProcessId*(`out`: ptr u32; handle: Handle): Result
+proc svcOpenProcess*(process: ptr Handle; processId: u32): Result {.cdecl,
+    importc: "svcOpenProcess", header: "svc.h".}
+proc svcExitProcess*() {.cdecl, importc: "svcExitProcess", header: "svc.h".}
+proc svcTerminateProcess*(process: Handle): Result {.cdecl,
+    importc: "svcTerminateProcess", header: "svc.h".}
+proc svcGetProcessInfo*(`out`: ptr s64; process: Handle; `type`: u32): Result {.cdecl,
+    importc: "svcGetProcessInfo", header: "svc.h".}
+proc svcGetProcessId*(`out`: ptr u32; handle: Handle): Result {.cdecl,
+    importc: "svcGetProcessId", header: "svc.h".}
 proc svcGetProcessList*(processCount: ptr s32; processIds: ptr u32;
-                       processIdMaxCount: s32): Result
+                       processIdMaxCount: s32): Result {.cdecl,
+    importc: "svcGetProcessList", header: "svc.h".}
 proc svcCreatePort*(portServer: ptr Handle; portClient: ptr Handle; name: cstring;
-                   maxSessions: s32): Result
-proc svcConnectToPort*(`out`: ptr Handle; portName: cstring): Result
+                   maxSessions: s32): Result {.cdecl, importc: "svcCreatePort",
+    header: "svc.h".}
+proc svcConnectToPort*(`out`: ptr Handle; portName: cstring): Result {.cdecl,
+    importc: "svcConnectToPort", header: "svc.h".}
 #/@}
 #/@name Multithreading
 #/@{
@@ -301,14 +327,16 @@ proc svcConnectToPort*(`out`: ptr Handle; portName: cstring): Result
 #
 
 proc svcCreateThread*(thread: ptr Handle; entrypoint: ThreadFunc; arg: u32;
-                     stack_top: ptr u32; thread_priority: s32; processor_id: s32): Result
+                     stack_top: ptr u32; thread_priority: s32; processor_id: s32): Result {.
+    cdecl, importc: "svcCreateThread", header: "svc.h".}
 #*
 #  @brief Gets the handle of a thread.
 #  @param[out] thread  The handle of the thread
 #  @param      process The ID of the process linked to the thread
 #
 
-proc svcOpenThread*(thread: ptr Handle; process: Handle; threadId: u32): Result
+proc svcOpenThread*(thread: ptr Handle; process: Handle; threadId: u32): Result {.cdecl,
+    importc: "svcOpenThread", header: "svc.h".}
 #*
 #  @brief Exits the current thread.
 #
@@ -316,18 +344,19 @@ proc svcOpenThread*(thread: ptr Handle; process: Handle; threadId: u32): Result
 #  It means that you can join a thread by calling @code svcWaitSynchronization(threadHandle,yourtimeout); @endcode
 #
 
-proc svcExitThread*()
+proc svcExitThread*() {.cdecl, importc: "svcExitThread", header: "svc.h".}
 #*
 #  @brief Puts the current thread to sleep.
 #  @param ns The minimum number of nanoseconds to sleep for.
 #
 
-proc svcSleepThread*(ns: s64)
+proc svcSleepThread*(ns: s64) {.cdecl, importc: "svcSleepThread", header: "svc.h".}
 #*
 #  @brief Retrieves the priority of a thread.
 #
 
-proc svcGetThreadPriority*(`out`: ptr s32; handle: Handle): Result
+proc svcGetThreadPriority*(`out`: ptr s32; handle: Handle): Result {.cdecl,
+    importc: "svcGetThreadPriority", header: "svc.h".}
 #*
 #  @brief Changes the priority of a thread
 #  @param prio For userland apps, this has to be within the range [0x18;0x3F]
@@ -335,30 +364,37 @@ proc svcGetThreadPriority*(`out`: ptr s32; handle: Handle): Result
 #  Low values gives the thread higher priority.
 #
 
-proc svcSetThreadPriority*(thread: Handle; prio: s32): Result = 0
+proc svcSetThreadPriority*(thread: Handle; prio: s32): Result {.cdecl,
+    importc: "svcSetThreadPriority", header: "svc.h".}
 proc svcGetThreadAffinityMask*(affinitymask: ptr u8; thread: Handle;
-                              processorcount: s32): Result
+                              processorcount: s32): Result {.cdecl,
+    importc: "svcGetThreadAffinityMask", header: "svc.h".}
 proc svcSetThreadAffinityMask*(thread: Handle; affinitymask: ptr u8;
-                              processorcount: s32): Result
-proc svcGetThreadIdealProcessor*(processorid: ptr s32; thread: Handle): Result
-proc svcSetThreadIdealProcessor*(thread: Handle; processorid: s32): Result
+                              processorcount: s32): Result {.cdecl,
+    importc: "svcSetThreadAffinityMask", header: "svc.h".}
+proc svcGetThreadIdealProcessor*(processorid: ptr s32; thread: Handle): Result {.cdecl,
+    importc: "svcGetThreadIdealProcessor", header: "svc.h".}
+proc svcSetThreadIdealProcessor*(thread: Handle; processorid: s32): Result {.cdecl,
+    importc: "svcSetThreadIdealProcessor", header: "svc.h".}
 #*
 #  @brief Returns the ID of the processor the current thread is running on.
 #  @sa svcCreateThread
 #
 
-proc svcGetProcessorID*(): s32
+proc svcGetProcessorID*(): s32 {.cdecl, importc: "svcGetProcessorID", header: "svc.h".}
 #*
 #  @param out The thread ID of the thread @p handle.
 #
 
-proc svcGetThreadId*(`out`: ptr u32; handle: Handle): Result
+proc svcGetThreadId*(`out`: ptr u32; handle: Handle): Result {.cdecl,
+    importc: "svcGetThreadId", header: "svc.h".}
 #*
 #  @param out The process ID of the thread @p handle.
 #  @sa svcOpenProcess
 #
 
-proc svcGetProcessIdOfThread*(`out`: ptr u32; handle: Handle): Result
+proc svcGetProcessIdOfThread*(`out`: ptr u32; handle: Handle): Result {.cdecl,
+    importc: "svcGetProcessIdOfThread", header: "svc.h".}
 #*
 #  @brief Checks if a thread handle is valid.
 #  This requests always return an error when called, it only checks if the handle is a thread or not.
@@ -366,27 +402,38 @@ proc svcGetProcessIdOfThread*(`out`: ptr u32; handle: Handle): Result
 #  @return 0xD8E007F7 (BAD_HANDLE) if it isn't.
 #
 
-proc svcGetThreadInfo*(`out`: ptr s64; thread: Handle; `type`: ThreadInfoType): Result
+proc svcGetThreadInfo*(`out`: ptr s64; thread: Handle; `type`: ThreadInfoType): Result {.
+    cdecl, importc: "svcGetThreadInfo", header: "svc.h".}
 #/@}
 #/@name Synchronization
 #/@{
 
-proc svcCreateMutex*(mutex: ptr Handle; initially_locked: bool): Result
-proc svcReleaseMutex*(handle: Handle): Result
-proc svcCreateSemaphore*(semaphore: ptr Handle; initial_count: s32; max_count: s32): Result
-proc svcReleaseSemaphore*(count: ptr s32; semaphore: Handle; release_count: s32): Result
-proc svcCreateEvent*(event: ptr Handle; reset_type: u8): Result
-proc svcSignalEvent*(handle: Handle): Result
-proc svcClearEvent*(handle: Handle): Result
-proc svcWaitSynchronization*(handle: Handle; nanoseconds: s64): Result
+proc svcCreateMutex*(mutex: ptr Handle; initially_locked: bool): Result {.cdecl,
+    importc: "svcCreateMutex", header: "svc.h".}
+proc svcReleaseMutex*(handle: Handle): Result {.cdecl, importc: "svcReleaseMutex",
+    header: "svc.h".}
+proc svcCreateSemaphore*(semaphore: ptr Handle; initial_count: s32; max_count: s32): Result {.
+    cdecl, importc: "svcCreateSemaphore", header: "svc.h".}
+proc svcReleaseSemaphore*(count: ptr s32; semaphore: Handle; release_count: s32): Result {.
+    cdecl, importc: "svcReleaseSemaphore", header: "svc.h".}
+proc svcCreateEvent*(event: ptr Handle; reset_type: u8): Result {.cdecl,
+    importc: "svcCreateEvent", header: "svc.h".}
+proc svcSignalEvent*(handle: Handle): Result {.cdecl, importc: "svcSignalEvent",
+    header: "svc.h".}
+proc svcClearEvent*(handle: Handle): Result {.cdecl, importc: "svcClearEvent",
+    header: "svc.h".}
+proc svcWaitSynchronization*(handle: Handle; nanoseconds: s64): Result {.cdecl,
+    importc: "svcWaitSynchronization", header: "svc.h".}
 proc svcWaitSynchronizationN*(`out`: ptr s32; handles: ptr Handle; handles_num: s32;
-                             wait_all: bool; nanoseconds: s64): Result
+                             wait_all: bool; nanoseconds: s64): Result {.cdecl,
+    importc: "svcWaitSynchronizationN", header: "svc.h".}
 #*
 #  @brief Creates an address arbiter
 #  @sa svcArbitrateAddress
 #
 
-proc svcCreateAddressArbiter*(arbiter: ptr Handle): Result
+proc svcCreateAddressArbiter*(arbiter: ptr Handle): Result {.cdecl,
+    importc: "svcCreateAddressArbiter", header: "svc.h".}
 #*
 #  @brief Arbitrate an address, can be used for synchronization
 #  @param arbiter Handle of the arbiter
@@ -406,39 +453,59 @@ proc svcCreateAddressArbiter*(arbiter: ptr Handle): Result
 #
 
 proc svcArbitrateAddress*(arbiter: Handle; `addr`: u32; `type`: ArbitrationType;
-                         value: s32; nanoseconds: s64): Result
-proc svcSendSyncRequest*(session: Handle): Result
-proc svcAcceptSession*(session: ptr Handle; port: Handle): Result
+                         value: s32; nanoseconds: s64): Result {.cdecl,
+    importc: "svcArbitrateAddress", header: "svc.h".}
+proc svcSendSyncRequest*(session: Handle): Result {.cdecl,
+    importc: "svcSendSyncRequest", header: "svc.h".}
+proc svcAcceptSession*(session: ptr Handle; port: Handle): Result {.cdecl,
+    importc: "svcAcceptSession", header: "svc.h".}
 proc svcReplyAndReceive*(index: ptr s32; handles: ptr Handle; handleCount: s32;
-                        replyTarget: Handle): Result
+                        replyTarget: Handle): Result {.cdecl,
+    importc: "svcReplyAndReceive", header: "svc.h".}
 #/@}
 #/@name Time
 #/@{
 
-proc svcCreateTimer*(timer: ptr Handle; reset_type: u8): Result
-proc svcSetTimer*(timer: Handle; initial: s64; interval: s64): Result
-proc svcCancelTimer*(timer: Handle): Result
-proc svcClearTimer*(timer: Handle): Result
-proc svcGetSystemTick*(): u64
+proc svcCreateTimer*(timer: ptr Handle; reset_type: u8): Result {.cdecl,
+    importc: "svcCreateTimer", header: "svc.h".}
+proc svcSetTimer*(timer: Handle; initial: s64; interval: s64): Result {.cdecl,
+    importc: "svcSetTimer", header: "svc.h".}
+proc svcCancelTimer*(timer: Handle): Result {.cdecl, importc: "svcCancelTimer",
+    header: "svc.h".}
+proc svcClearTimer*(timer: Handle): Result {.cdecl, importc: "svcClearTimer",
+    header: "svc.h".}
+proc svcGetSystemTick*(): u64 {.cdecl, importc: "svcGetSystemTick", header: "svc.h".}
 #/@}
 #/@name System
 #/@{
 
-proc svcCloseHandle*(handle: Handle): Result
-proc svcDuplicateHandle*(`out`: ptr Handle; original: Handle): Result
-proc svcGetSystemInfo*(`out`: ptr s64; `type`: u32; param: s32): Result
-proc svcKernelSetState*(`type`: u32; param0: u32; param1: u32; param2: u32): Result
+proc svcCloseHandle*(handle: Handle): Result {.cdecl, importc: "svcCloseHandle",
+    header: "svc.h".}
+proc svcDuplicateHandle*(`out`: ptr Handle; original: Handle): Result {.cdecl,
+    importc: "svcDuplicateHandle", header: "svc.h".}
+proc svcGetSystemInfo*(`out`: ptr s64; `type`: u32; param: s32): Result {.cdecl,
+    importc: "svcGetSystemInfo", header: "svc.h".}
+proc svcKernelSetState*(`type`: u32; param0: u32; param1: u32; param2: u32): Result {.
+    cdecl, importc: "svcKernelSetState", header: "svc.h".}
 #/@}
 #/@name Debugging
 #/@{
 
-proc svcBreak*(breakReason: UserBreakType)
-proc svcOutputDebugString*(str: cstring; length: cint): Result
-proc svcDebugActiveProcess*(debug: ptr Handle; processId: u32): Result
-proc svcBreakDebugProcess*(debug: Handle): Result
-proc svcTerminateDebugProcess*(debug: Handle): Result
-proc svcGetProcessDebugEvent*(info: ptr DebugEventInfo; debug: Handle): Result
-proc svcContinueDebugEvent*(debug: Handle; flags: u32): Result
+proc svcBreak*(breakReason: UserBreakType) {.cdecl, importc: "svcBreak",
+    header: "svc.h".}
+proc svcOutputDebugString*(str: cstring; length: cint): Result {.cdecl,
+    importc: "svcOutputDebugString", header: "svc.h".}
+proc svcDebugActiveProcess*(debug: ptr Handle; processId: u32): Result {.cdecl,
+    importc: "svcDebugActiveProcess", header: "svc.h".}
+proc svcBreakDebugProcess*(debug: Handle): Result {.cdecl,
+    importc: "svcBreakDebugProcess", header: "svc.h".}
+proc svcTerminateDebugProcess*(debug: Handle): Result {.cdecl,
+    importc: "svcTerminateDebugProcess", header: "svc.h".}
+proc svcGetProcessDebugEvent*(info: ptr DebugEventInfo; debug: Handle): Result {.cdecl,
+    importc: "svcGetProcessDebugEvent", header: "svc.h".}
+proc svcContinueDebugEvent*(debug: Handle; flags: u32): Result {.cdecl,
+    importc: "svcContinueDebugEvent", header: "svc.h".}
 #/@}
 
-proc svcBackdoor*(callback: proc (): s32): Result
+proc svcBackdoor*(callback: proc (): s32 {.cdecl.}): Result {.cdecl,
+    importc: "svcBackdoor", header: "svc.h".}
